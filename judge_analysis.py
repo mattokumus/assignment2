@@ -202,21 +202,31 @@ def judge_descriptive_stats(df, judge_panel_df):
     return judge_violation_rates
 
 
-def judge_country_interaction(judge_panel_df, min_cases=20):
+def judge_country_interaction(judge_panel_df, min_cases=20, min_country_cases=30):
     """
     Analyze if specific judges treat specific countries differently
+    Uses same country filtering as the model for consistency
     """
     print("\n" + "=" * 80)
     print("JUDGE × COUNTRY INTERACTION ANALYSIS")
     print("=" * 80)
 
+    # Filter to countries with sufficient cases (consistent with model)
+    country_counts = judge_panel_df.groupby('case_id')['country_name'].first().value_counts()
+    eligible_countries = country_counts[country_counts >= min_country_cases].index
+
+    df_country_filtered = judge_panel_df[judge_panel_df['country_name'].isin(eligible_countries)].copy()
+
     # Filter to judges with sufficient cases
-    judge_counts = judge_panel_df['judge_name'].value_counts()
+    judge_counts = df_country_filtered['judge_name'].value_counts()
     active_judges = judge_counts[judge_counts >= min_cases].index
 
-    df_active = judge_panel_df[judge_panel_df['judge_name'].isin(active_judges)].copy()
+    df_active = df_country_filtered[df_country_filtered['judge_name'].isin(active_judges)].copy()
 
-    print(f"\n📊 Filtering to active judges (min {min_cases} cases):")
+    print(f"\n📊 Filtering (consistent with model):")
+    print(f"   • Min cases per country: {min_country_cases}")
+    print(f"   • Countries included: {len(eligible_countries)}")
+    print(f"   • Min cases per judge: {min_cases}")
     print(f"   • Judges included: {len(active_judges)}")
     print(f"   • Cases included: {df_active['case_id'].nunique()}")
 
@@ -635,8 +645,8 @@ def main():
     # Descriptive statistics
     judge_violation_rates = judge_descriptive_stats(df, judge_panel_df)
 
-    # Judge-country interaction
-    judge_region_pivot = judge_country_interaction(judge_panel_df, min_cases=20)
+    # Judge-country interaction (using same filtering as model for consistency)
+    judge_region_pivot = judge_country_interaction(judge_panel_df, min_cases=20, min_country_cases=30)
 
     # Models with and without judge controls
     # Balanced thresholds: consistent with logistic regression (min_country=30)
