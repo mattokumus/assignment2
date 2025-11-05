@@ -1,0 +1,457 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSON Schema",
+  "description": "Auto-generated JSON Schema",
+  "type": "object",
+  "properties": {
+    "__articles": {
+      "type": "string",
+      "examples": [
+        "3;6;6+6-3-c;6-1;6-3-c",
+        "P1-3",
+        "6;6-1"
+      ]
+    },
+    "__conclusion": {
+      "type": "string",
+      "examples": [
+        "No violation of Article 6+6-3-c - Right to a fair trial (Article 6 - Criminal proceedings;Article 6-1 - Fair hearing) (Article 6 - Right to a fair trial;Article 6-3-c - Defence through legal assistance);Violation of Article 3 - Prohibition of torture (Article 3 - Degrading treatment;Inhuman treatment)",
+        "Violation of Article 3 of Protocol No. 1 - Right to free elections-{general} (Article 3 of Protocol No. 1 - Stand for election);No violation of Article 3 of Protocol No. 1 - Right to free elections-{general} (Article 3 of Protocol No. 1 - Vote)",
+        "Violation of Art. 6-1"
+      ]
+    },
+    "applicability": {
+      "type": "string",
+      "examples": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "application": {
+      "type": "string",
+      "examples": [
+        "MS WORD",
+        "MS WORD",
+        "MS WORD"
+      ]
+    },
+    "appno": {
+      "type": "string",
+      "examples": [
+        "45498/11",
+        "18860/07",
+        "75567/01"
+      ]
+    },
+    "article": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "conclusion": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "article": {
+            "type": "string",
+            "examples": [
+              "6-3-c",
+              "3",
+              "p1-3"
+            ]
+          },
+          "base_article": {
+            "type": "string",
+            "examples": [
+              "6",
+              "3",
+              "p1-3"
+            ]
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "element": {
+            "type": "string",
+            "examples": [
+              "No violation of Article 6+6-3-c - Right to a fair trial",
+              "Violation of Article 3 - Prohibition of torture",
+              "Violation of Article 3 of Protocol No. 1 - Right to free elections-{general}"
+            ]
+          },
+          "mentions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "no-violation",
+              "violation",
+              "violation"
+            ]
+          }
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "examples": [
+                "PROCEDURE",
+                "THE FACTS",
+                "THE LAW"
+              ]
+            },
+            "elements": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "examples": [
+                      "1.  The case originated in an application (no. 45498/11) against the Russian Federation lodged with the Court under Article 34 of the Convention for the Protection of Human Rights and Fundamental Freedoms (“the Convention”) by a Russian national, Mr Sergey Viktorovich Sklyar, on 13 June 2011.",
+                      "2.  The applicant was represented by Ms. E. Efremova, a lawyer practising in Moscow. On 4 June 2013 the applicant was granted legal aid.",
+                      "3.  The Russian Government (\"the Government\") were represented initially by Mr G. Matyushkin, the Representative of the Russian Federation to the European Court of Human Rights, and then by his successor in that office, Mr M. Galperin."
+                    ]
+                  },
+                  "elements": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "string",
+                          "examples": [
+                            "6.  The applicant was born in 1975 and lived in Novosibirsk before his arrest.",
+                            "7.  On 12 November 2010 the Kalininskiy District Court of Novosibirsk convicted the applicant of aggravated theft and armed robbery and sentenced him to nine years’ imprisonment. The applicant was represented by a lawyer in these proceedings.",
+                            "8.  On 24 January 2011 an appeal brought by the applicant himself was examined by the Novosibirsk Regional Court in the absence of counsel. The appeal court upheld the applicant’s conviction."
+                          ]
+                        },
+                        "elements": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "content": {
+                                "type": "string",
+                                "examples": [
+                                  "13.  The Code of Criminal Procedure of the Russian Federation (in force from 1 July 2002) provides:",
+                                  "“1.  The participation of legal counsel in criminal proceedings is mandatory if:",
+                                  "..."
+                                ]
+                              },
+                              "elements": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "content": {
+                                      "type": "string",
+                                      "examples": [
+                                        "19.  The Government submitted that the applicant had waived his right to be represented by a lawyer in his appeal hearing, in accordance with the applicable provisions of the Russian Code of Criminal Procedure. In particular, they submitted that on 12 November 2010, after the text of the judgment in the applicant’s case had been announced, he had signed a written waiver refusing legal representation and indicating that his refusal had not been motivated by financial reasons. On 22 November 2010 the applicant had received a copy of the judgment and had signed another document in which he had stated that he would appeal against his conviction, that he had again refused the services of a lawyer and that the refusal was not for financial reasons. In his statement of appeal the applicant had not requested to have a lawyer appointed for the appeal hearing. The Government submitted copies of the documents of 12 and 22 November 2010 to the Court. The Government further submitted that on 24 January 2011, when the appeal court had examined the applicant’s case, he had not submitted any requests related to a lack of legal representation. Given the above, the applicant’s rights under Article 6 §§ 1 and 3 (c) of the Convention had therefore not been breached.",
+                                        "20.  The applicant disagreed and explained that he had never seen the documents submitted by the Government, had never signed them and stated that they had been forged. He acknowledged that he had not requested a lawyer during his appeal hearing. However, the appeal court should have enquired whether he wished to retain one and if so, to appoint a lawyer for him. He further submitted that he had not had the financial means to hire a lawyer at any stage of the criminal proceedings against him. In addition, he had needed qualified legal representation for his appeal because his criminal case had been particularly complex as it had involved charges of aggravated theft and robbery and only a practising lawyer could have effectively represented him.",
+                                        "21.  The Court notes at the outset that the requirements of Article 6 § 3 are to be seen as particular aspects of the right to a fair trial guaranteed by Article 6 § 1 and therefore the applicant’s complaints under Article 6 §§ 1 and 3 should be examined together (see Vacher v. France, 17 December 1996, § 22, Reports of Judgments and Decisions 1996-VI)."
+                                      ]
+                                    },
+                                    "elements": {
+                                      "type": "array"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "section_name": {
+              "type": "string",
+              "examples": [
+                "procedure",
+                "facts",
+                "law"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "country": {
+      "type": "object",
+      "properties": {
+        "alpha2": {
+          "type": "string",
+          "examples": [
+            "ru",
+            "ru",
+            "si"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "examples": [
+            "Russian Federation",
+            "Russian Federation",
+            "Slovenia"
+          ]
+        }
+      }
+    },
+    "decision_body": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "examples": [
+              "Helena Jäderblom",
+              "Branko Lubarda",
+              "Helen Keller"
+            ]
+          },
+          "role": {
+            "type": "string",
+            "examples": [
+              "president",
+              "judges",
+              "judges"
+            ]
+          }
+        }
+      }
+    },
+    "decisiondate": {
+      "type": "string",
+      "examples": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "docname": {
+      "type": "string",
+      "examples": [
+        "CASE OF SKLYAR v. RUSSIA",
+        "CASE OF YABLOKO RUSSIAN UNITED DEMOCRATIC PARTY AND OTHERS v. RUSSIA",
+        "CASE OF OBERWALDER v. SLOVENIA"
+      ]
+    },
+    "doctypebranch": {
+      "type": "string",
+      "examples": [
+        "CHAMBER",
+        "CHAMBER",
+        "CHAMBER"
+      ]
+    },
+    "documentcollectionid": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ecli": {
+      "type": "string",
+      "examples": [
+        "ECLI:CE:ECHR:2017:0718JUD004549811",
+        "ECLI:CE:ECHR:2016:1108JUD001886007",
+        "ECLI:CE:ECHR:2007:0118JUD007556701"
+      ]
+    },
+    "externalsources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "extractedappno": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "importance": {
+      "type": "string",
+      "examples": [
+        "4",
+        "4",
+        "4"
+      ]
+    },
+    "introductiondate": {
+      "type": "string",
+      "examples": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "issue": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "itemid": {
+      "type": "string",
+      "examples": [
+        "001-175680",
+        "001-168352",
+        "001-79133"
+      ]
+    },
+    "judgementdate": {
+      "type": "string",
+      "examples": [
+        "18/07/2017 00:00:00",
+        "08/11/2016 00:00:00",
+        "18/01/2007 00:00:00"
+      ]
+    },
+    "kpdate": {
+      "type": "string",
+      "examples": [
+        "18/07/2017 00:00:00",
+        "08/11/2016 00:00:00",
+        "18/01/2007 00:00:00"
+      ]
+    },
+    "kpthesaurus": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "languageisocode": {
+      "type": "string",
+      "examples": [
+        "ENG",
+        "ENG",
+        "ENG"
+      ]
+    },
+    "originatingbody": {
+      "type": "string",
+      "examples": [
+        "6",
+        "6",
+        "6"
+      ]
+    },
+    "originatingbody_name": {
+      "type": "string",
+      "examples": [
+        "Third Section",
+        "Third Section",
+        "Third Section"
+      ]
+    },
+    "originatingbody_type": {
+      "type": "string",
+      "examples": [
+        "Court",
+        "Court",
+        "Court"
+      ]
+    },
+    "paragraphs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parties": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rank": {
+      "type": "string",
+      "examples": [
+        "1949.88940429688",
+        "1677.8408203125",
+        "571.727294921875"
+      ]
+    },
+    "representedby": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "respondent": {
+      "type": "string",
+      "examples": [
+        "RUS",
+        "RUS",
+        "SVN"
+      ]
+    },
+    "respondentOrderEng": {
+      "type": "string",
+      "examples": [
+        "38",
+        "38",
+        "43"
+      ]
+    },
+    "scl": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "separateopinion": {
+      "type": "string",
+      "examples": [
+        "FALSE",
+        "FALSE",
+        "FALSE"
+      ]
+    },
+    "sharepointid": {
+      "type": "string",
+      "examples": [
+        "466267",
+        "458067",
+        "340339"
+      ]
+    },
+    "typedescription": {
+      "type": "string",
+      "examples": [
+        "15",
+        "15",
+        "15"
+      ]
+    }
+  }
+}
