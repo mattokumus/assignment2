@@ -86,10 +86,9 @@ def extract_judge_info(decision_body):
                 president = name
 
     return {
-        'judges_all': '; '.join(all_judges),  # All judges separated by semicolon
         'judge_president': president,
         'judge_count': len(all_judges),
-        'judge_names_list': '|'.join(all_judges)  # Alternative format with pipe separator
+        'judge_names_list': '|'.join(all_judges)  # Judge names separated by pipe
     }
 
 
@@ -192,7 +191,6 @@ def extract_case_data(case):
         # Judge information
         'judge_president': judge_info['judge_president'],
         'judge_count': judge_info['judge_count'],
-        'judges_all': judge_info['judges_all'],
         'judge_names_list': judge_info['judge_names_list']
     }
 
