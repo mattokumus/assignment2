@@ -631,7 +631,8 @@ def main():
     judge_region_pivot = judge_country_interaction(judge_panel_df, min_cases=20)
 
     # Models with and without judge controls
-    result1, result2 = simple_country_model_with_judges(df, min_country_cases=30, min_judge_cases=20)
+    # Increased thresholds to avoid singular matrix issues
+    result1, result2 = simple_country_model_with_judges(df, min_country_cases=50, min_judge_cases=30)
 
     # Visualizations
     create_visualizations(df, judge_panel_df, judge_violation_rates, judge_region_pivot)
