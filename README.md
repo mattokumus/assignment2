@@ -63,7 +63,12 @@ assignment2/
 │   └── hypothesis_test_visualizations.png # Statistical test results
 │
 └── Documentation:
+    ├── METHODOLOGY.md                     # Detailed statistical methodology
+    ├── DATA_PROVENANCE.md                 # Data pipeline documentation
     └── JUDGE_ANALYSIS_README.md           # Judge analysis methodology
+
+└── Archive:
+    └── backup_pre_analysis_updates/       # Original versions (before improvements)
 ```
 
 ---
@@ -115,6 +120,10 @@ python3 hypotesis_testing.py
 ---
 
 ## 📈 Methodology
+
+**📖 For detailed methodology with full justifications, see [METHODOLOGY.md](METHODOLOGY.md)**
+
+**📊 For data pipeline documentation, see [DATA_PROVENANCE.md](DATA_PROVENANCE.md)**
 
 ### Three Complementary Approaches
 
