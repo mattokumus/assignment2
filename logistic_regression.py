@@ -43,13 +43,14 @@ def load_and_prepare_data(filename='extracted_data.csv'):
         'Bulgaria', 'Croatia', 'Slovenia', 'Slovakia', 'Czechia',
         'Lithuania', 'Latvia', 'Estonia', 'Moldova, Republic of',
         'Serbia', 'Bosnia and Herzegovina', 'North Macedonia', 'Albania',
-        'Belarus', 'Armenia', 'Azerbaijan', 'Georgia'
+        'Armenia', 'Azerbaijan', 'Georgia', 'Turkey', 'Montenegro'
     ]
-    
+
     western_europe = [
         'United Kingdom', 'Germany', 'France', 'Italy', 'Spain',
         'Netherlands', 'Belgium', 'Austria', 'Switzerland', 'Sweden',
-        'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Greece'
+        'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Greece',
+        'Cyprus', 'Malta', 'Luxembourg', 'Iceland', 'San Marino', 'Liechtenstein'
     ]
     
     df['region'] = df['country_name'].apply(
