@@ -38,7 +38,7 @@ def load_and_prepare_data(filename='extracted_data.csv'):
     print(f"\n✓ Data loaded: {len(df)} cases")
 
     # Check if judge columns exist
-    required_cols = ['judge_president', 'judge_count', 'judges_all', 'judge_names_list']
+    required_cols = ['judge_president', 'judge_count', 'judge_names_list']
     missing_cols = [col for col in required_cols if col not in df.columns]
 
     if missing_cols:
