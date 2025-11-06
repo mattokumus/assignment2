@@ -16,8 +16,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split, cross_val_score, cross_validate, learning_curve
+from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import (
@@ -148,13 +149,17 @@ def train_models(X, y):
     print(f"  - Training set: {len(X_train)} cases ({len(X_train)/len(X)*100:.1f}%)")
     print(f"  - Test set: {len(X_test)} cases ({len(X_test)/len(X)*100:.1f}%)")
 
-    # Define models
+    # Define models with pipelines (scaling for logistic regression)
     models = {
-        'Logistic Regression': LogisticRegression(
-            max_iter=1000,
-            random_state=42,
-            class_weight='balanced'
-        ),
+        'Logistic Regression': Pipeline([
+            ('scaler', StandardScaler()),
+            ('classifier', LogisticRegression(
+                max_iter=5000,
+                random_state=42,
+                class_weight='balanced',
+                solver='saga'
+            ))
+        ]),
         'Random Forest': RandomForestClassifier(
             n_estimators=100,
             max_depth=10,
@@ -286,22 +291,29 @@ def get_feature_importance(models, feature_names):
     importance_data = {}
 
     for name, model in models.items():
-        if hasattr(model, 'feature_importances_'):
+        # Handle pipeline models
+        if hasattr(model, 'named_steps'):
+            # Extract the actual classifier from pipeline
+            actual_model = model.named_steps['classifier']
+        else:
+            actual_model = model
+
+        if hasattr(actual_model, 'feature_importances_'):
             # Tree-based models
             importance_data[name] = pd.DataFrame({
                 'feature': feature_names,
-                'importance': model.feature_importances_
+                'importance': actual_model.feature_importances_
             }).sort_values('importance', ascending=False).head(15)
 
             print(f"\n{name} - Top 10 Features:")
             for idx, row in importance_data[name].head(10).iterrows():
                 print(f"  {row['feature']:<50} {row['importance']:.4f}")
 
-        elif hasattr(model, 'coef_'):
+        elif hasattr(actual_model, 'coef_'):
             # Logistic Regression
             importance_data[name] = pd.DataFrame({
                 'feature': feature_names,
-                'importance': np.abs(model.coef_[0])
+                'importance': np.abs(actual_model.coef_[0])
             }).sort_values('importance', ascending=False).head(15)
 
             print(f"\n{name} - Top 10 Features (|coefficient|):")
