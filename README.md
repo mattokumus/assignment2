@@ -146,11 +146,21 @@ python3 hypotesis_testing.py
 
 # 6. Machine Learning Models Comparison (NEW!)
 python3 ml_models_comparison.py
-# Output: ml_models_comparison.png
+# Outputs:
+#   - ml_models_comparison.png (static visualization)
+#   - ml_models_interactive.html (interactive Plotly dashboard) 🎯
+#
 # Models: Logistic Regression, Random Forest, XGBoost, Gradient Boosting
 # Evaluation: 5-fold cross-validation with ROC-AUC, F1, Precision, Recall
 # Split strategies: Random (stratified) + Temporal (2015 cutoff)
 # Temporal split: Train on 2000-2014, Test on 2015-2020 for realistic generalization
+#
+# 🌐 Interactive HTML Dashboard Features:
+#   - Double-click to open in browser (no web server needed!)
+#   - Hover for detailed metrics
+#   - Click legend to toggle models
+#   - Drag to zoom, double-click to reset
+#   - Export as PNG via camera icon
 ```
 
 ---

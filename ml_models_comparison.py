@@ -26,6 +26,9 @@ from sklearn.metrics import (
     roc_curve, f1_score, precision_score, recall_score, accuracy_score
 )
 import xgboost as xgb
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import plotly.express as px
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -314,6 +317,159 @@ def get_feature_importance(models, feature_names):
     return importance_data
 
 
+def create_interactive_dashboard(models_random, models_temporal,
+                                 results_random, results_temporal,
+                                 test_results_random, test_results_temporal,
+                                 importance_data, X_test_random, y_test_random,
+                                 X_train_temporal, X_test_temporal, y_test_temporal,
+                                 feature_names):
+    """
+    Create comprehensive interactive Plotly HTML dashboard
+    """
+    print("\n" + "=" * 80)
+    print("CREATING INTERACTIVE PLOTLY DASHBOARD")
+    print("=" * 80)
+
+    # Color scheme
+    colors = {'Logistic Regression': '#FF6B6B', 'Random Forest': '#4ECDC4',
+              'XGBoost': '#45B7D1', 'Gradient Boosting': '#96CEB4'}
+
+    # Create main figure with subplots
+    fig = make_subplots(
+        rows=3, cols=3,
+        subplot_titles=(
+            '📊 ROC Curves (Interactive)', '📈 Performance Metrics Comparison',
+            '🎯 Random vs Temporal Split', '🔥 Top 15 Feature Importance',
+            '📉 Model Comparison', '⚡ Accuracy: Random vs Temporal',
+            '🎲 Confusion: Random Forest', '🎲 Confusion: XGBoost (Temporal)',
+            '📊 Model Ranking (CV ROC-AUC)'
+        ),
+        specs=[[{"type": "scatter"}, {"type": "bar"}, {"type": "bar"}],
+               [{"type": "bar"}, {"type": "bar"}, {"type": "bar"}],
+               [{"type": "heatmap"}, {"type": "heatmap"}, {"type": "bar"}]],
+        vertical_spacing=0.12, horizontal_spacing=0.1
+    )
+
+    # 1. ROC Curves with hover
+    for name, model in models_random.items():
+        y_pred_proba = model.predict_proba(X_test_random)[:, 1]
+        fpr, tpr, _ = roc_curve(y_test_random, y_pred_proba)
+        auc = test_results_random[name]['roc_auc']
+        fig.add_trace(go.Scatter(
+            x=fpr, y=tpr, mode='lines', name=name,
+            line=dict(color=colors[name], width=3),
+            hovertemplate=f'<b>{name}</b><br>FPR: %{{x:.3f}}<br>TPR: %{{y:.3f}}<br>AUC: {auc:.3f}<extra></extra>',
+            legendgroup=name, showlegend=True
+        ), row=1, col=1)
+    fig.add_trace(go.Scatter(x=[0,1], y=[0,1], mode='lines', name='Random',
+                             line=dict(color='gray', width=2, dash='dash'),
+                             hovertemplate='Random<br>AUC: 0.500<extra></extra>'), row=1, col=1)
+
+    # 2. Performance metrics
+    model_names = list(test_results_random.keys())
+    metrics = ['ROC-AUC', 'F1', 'Precision', 'Recall']
+    for i, name in enumerate(model_names):
+        values = [test_results_random[name][k] for k in ['roc_auc', 'f1', 'precision', 'recall']]
+        fig.add_trace(go.Bar(x=metrics, y=values, name=name, marker_color=colors[name],
+                            hovertemplate=f'<b>{name}</b><br>%{{x}}: %{{y:.3f}}<extra></extra>',
+                            legendgroup=name, showlegend=False, offsetgroup=i), row=1, col=2)
+
+    # 3. Random vs Temporal comparison
+    random_aucs = [test_results_random[n]['roc_auc'] for n in model_names]
+    temporal_aucs = [test_results_temporal[n]['roc_auc'] for n in model_names]
+    fig.add_trace(go.Bar(x=model_names, y=random_aucs, name='Random Split',
+                         marker_color='lightblue',
+                         hovertemplate='<b>%{x}</b><br>Random: %{y:.3f}<extra></extra>'), row=1, col=3)
+    fig.add_trace(go.Bar(x=model_names, y=temporal_aucs, name='Temporal Split',
+                         marker_color='darkblue',
+                         hovertemplate='<b>%{x}</b><br>Temporal: %{y:.3f}<extra></extra>'), row=1, col=3)
+
+    # 4. Feature importance
+    rf_imp = importance_data['Random Forest'].head(15)
+    fig.add_trace(go.Bar(y=rf_imp['feature'], x=rf_imp['importance'], orientation='h',
+                         marker_color='teal',
+                         hovertemplate='<b>%{y}</b><br>Importance: %{x:.4f}<extra></extra>',
+                         showlegend=False), row=2, col=1)
+
+    # 5. F1-Score comparison
+    random_f1 = [test_results_random[n]['f1'] for n in model_names]
+    temporal_f1 = [test_results_temporal[n]['f1'] for n in model_names]
+    fig.add_trace(go.Bar(x=model_names, y=random_f1, name='Random F1',
+                         marker_color='lightcoral', showlegend=False,
+                         hovertemplate='<b>%{x}</b><br>F1: %{y:.3f}<extra></extra>'), row=2, col=2)
+    fig.add_trace(go.Bar(x=model_names, y=temporal_f1, name='Temporal F1',
+                         marker_color='darkred', showlegend=False,
+                         hovertemplate='<b>%{x}</b><br>F1: %{y:.3f}<extra></extra>'), row=2, col=2)
+
+    # 6. Accuracy comparison
+    random_acc = [test_results_random[n]['accuracy'] for n in model_names]
+    temporal_acc = [test_results_temporal[n]['accuracy'] for n in model_names]
+    fig.add_trace(go.Bar(x=model_names, y=random_acc, name='Random Acc',
+                         marker_color='lightgreen', showlegend=False,
+                         hovertemplate='<b>%{x}</b><br>Acc: %{y:.1%}<extra></extra>'), row=2, col=3)
+    fig.add_trace(go.Bar(x=model_names, y=temporal_acc, name='Temporal Acc',
+                         marker_color='darkgreen', showlegend=False,
+                         hovertemplate='<b>%{x}</b><br>Acc: %{y:.1%}<extra></extra>'), row=2, col=3)
+
+    # 7. Confusion matrix - Random Forest (Random)
+    cm_rf = test_results_random['Random Forest']['confusion_matrix']
+    fig.add_trace(go.Heatmap(z=cm_rf, x=['No Viol', 'Violation'],
+                             y=['No Viol', 'Violation'], colorscale='Blues',
+                             text=cm_rf, texttemplate='%{text}',
+                             hovertemplate='True: %{y}<br>Pred: %{x}<br>Count: %{z}<extra></extra>',
+                             showscale=False), row=3, col=1)
+
+    # 8. Confusion matrix - XGBoost (Temporal)
+    cm_xgb = test_results_temporal['XGBoost']['confusion_matrix']
+    fig.add_trace(go.Heatmap(z=cm_xgb, x=['No Viol', 'Violation'],
+                             y=['No Viol', 'Violation'], colorscale='Greens',
+                             text=cm_xgb, texttemplate='%{text}',
+                             hovertemplate='True: %{y}<br>Pred: %{x}<br>Count: %{z}<extra></extra>',
+                             showscale=False), row=3, col=2)
+
+    # 9. Model ranking
+    ranking = results_random.sort_values('roc_auc_mean', ascending=True)
+    fig.add_trace(go.Bar(y=ranking['model'], x=ranking['roc_auc_mean'], orientation='h',
+                         marker=dict(color=ranking['roc_auc_mean'], colorscale='RdYlGn',
+                                   showscale=True, colorbar=dict(title="ROC-AUC", x=1.15)),
+                         hovertemplate='<b>%{y}</b><br>CV ROC-AUC: %{x:.3f}<extra></extra>',
+                         showlegend=False), row=3, col=3)
+
+    # Update layout
+    fig.update_layout(
+        title={'text': '🎯 Interactive ML Dashboard - ECHR Violation Prediction (Click, Zoom, Hover to Explore!)',
+               'x': 0.5, 'xanchor': 'center',
+               'font': {'size': 18, 'color': 'darkblue', 'family': 'Arial Black'}},
+        height=1400, showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(size=10)),
+        hovermode='closest', template='plotly_white', font=dict(size=9)
+    )
+
+    # Axis labels
+    fig.update_xaxes(title_text="False Positive Rate", row=1, col=1)
+    fig.update_yaxes(title_text="True Positive Rate", row=1, col=1)
+    fig.update_yaxes(title_text="Score", row=1, col=2)
+    fig.update_yaxes(title_text="ROC-AUC", row=1, col=3)
+    fig.update_xaxes(title_text="Importance", row=2, col=1)
+    fig.update_yaxes(title_text="F1-Score", row=2, col=2)
+    fig.update_yaxes(title_text="Accuracy", row=2, col=3)
+
+    # Save HTML
+    output_file = 'ml_models_interactive.html'
+    fig.write_html(output_file, config={'displayModeBar': True, 'displaylogo': False,
+                                        'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+                                        'toImageButtonOptions': {'format': 'png', 'filename': 'ml_comparison',
+                                                                'height': 1400, 'width': 1800, 'scale': 2}})
+
+    print(f"\n✓ Interactive dashboard saved: {output_file}")
+    print(f"  🌐 Double-click to open in browser")
+    print(f"  🎯 Features: Zoom in/out, Pan, Hover for details, Click legend to toggle")
+    print(f"  📸 Camera icon to download as PNG")
+    print(f"  🖱️ Drag to zoom, Double-click to reset")
+
+    return output_file
+
+
 def create_visualizations(models, results_df, test_results, importance_data,
                          X_test, y_test, X, y):
     """
@@ -530,9 +686,19 @@ def main():
     # Get feature importance (using random split models)
     importance_data = get_feature_importance(models_random, feature_names)
 
-    # Create visualizations (using random split for main viz)
+    # Create visualizations (static PNG - using random split)
     create_visualizations(models_random, results_random, test_results_random, importance_data,
                          X_test_random, y_test_random, X, y)
+
+    # Create interactive HTML dashboard
+    create_interactive_dashboard(
+        models_random, models_temporal,
+        results_random, results_temporal,
+        test_results_random, test_results_temporal,
+        importance_data, X_test_random, y_test_random,
+        X_train_temporal, X_test_temporal, y_test_temporal,
+        feature_names
+    )
 
     # Final summary
     print("\n" + "=" * 80)
@@ -598,7 +764,17 @@ def main():
     print("      • Regional bias findings are temporally robust")
 
     print("\n" + "=" * 80)
-    print(f"✓ Visualization saved: ml_models_comparison.png")
+    print("📊 OUTPUT FILES:")
+    print("=" * 80)
+    print(f"   ✓ Static visualization: ml_models_comparison.png")
+    print(f"   ✓ Interactive dashboard: ml_models_interactive.html")
+    print(f"\n💡 How to use ml_models_interactive.html:")
+    print(f"   1. Double-click the file to open in browser")
+    print(f"   2. Hover over any point for detailed information")
+    print(f"   3. Click legend items to show/hide models")
+    print(f"   4. Drag to zoom into specific areas")
+    print(f"   5. Double-click to reset zoom")
+    print(f"   6. Use camera icon (top-right) to export as PNG")
     print("=" * 80)
 
 
