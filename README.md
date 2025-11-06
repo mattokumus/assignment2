@@ -149,6 +149,8 @@ python3 ml_models_comparison.py
 # Output: ml_models_comparison.png
 # Models: Logistic Regression, Random Forest, XGBoost, Gradient Boosting
 # Evaluation: 5-fold cross-validation with ROC-AUC, F1, Precision, Recall
+# Split strategies: Random (stratified) + Temporal (2015 cutoff)
+# Temporal split: Train on 2000-2014, Test on 2015-2020 for realistic generalization
 ```
 
 ---

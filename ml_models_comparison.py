@@ -90,7 +90,7 @@ def load_and_prepare_data(filename='extracted_data.csv'):
 def prepare_features(df):
     """
     Prepare features for ML models
-    Returns: X (features), y (target), feature_names
+    Returns: X (features), y (target), feature_names, df_model (for temporal split)
     """
     print("\n" + "=" * 80)
     print("FEATURE ENGINEERING")
@@ -129,25 +129,16 @@ def prepare_features(df):
     print(f"  - Target distribution: {y.value_counts().to_dict()}")
     print(f"  - Violation rate: {y.mean():.1%}")
 
-    return X, y, X.columns.tolist()
+    return X, y, X.columns.tolist(), df_model
 
 
-def train_models(X, y):
+def train_models(X_train, X_test, y_train, y_test):
     """
-    Train multiple ML models and return trained models
+    Train multiple ML models with given train/test split
     """
-    print("\n" + "=" * 80)
-    print("MODEL TRAINING")
-    print("=" * 80)
-
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
-    )
-
-    print(f"\n✓ Data split:")
-    print(f"  - Training set: {len(X_train)} cases ({len(X_train)/len(X)*100:.1f}%)")
-    print(f"  - Test set: {len(X_test)} cases ({len(X_test)/len(X)*100:.1f}%)")
+    print(f"\n✓ Training/Test split:")
+    print(f"  - Training set: {len(X_train)} cases ({len(X_train)/(len(X_train)+len(X_test))*100:.1f}%)")
+    print(f"  - Test set: {len(X_test)} cases ({len(X_test)/(len(X_train)+len(X_test))*100:.1f}%)")
 
     # Define models with pipelines (scaling for logistic regression)
     models = {
@@ -193,7 +184,7 @@ def train_models(X, y):
         trained_models[name] = model
         print(f"   ✓ {name} trained")
 
-    return trained_models, X_train, X_test, y_train, y_test
+    return trained_models
 
 
 def evaluate_models(models, X_train, X_test, y_train, y_test, X, y):
@@ -446,37 +437,119 @@ def create_visualizations(models, results_df, test_results, importance_data,
 
 
 def main():
-    """Main execution function"""
+    """Main execution function with both random and temporal splits"""
 
     # Load and prepare data
     df = load_and_prepare_data()
 
     # Prepare features
-    X, y, feature_names = prepare_features(df)
+    X, y, feature_names, df_model = prepare_features(df)
+
+    # ========================================================================
+    # STRATEGY 1: RANDOM SPLIT (Stratified)
+    # ========================================================================
+    print("\n" + "=" * 80)
+    print("STRATEGY 1: RANDOM SPLIT (STRATIFIED)")
+    print("All years mixed - standard ML approach")
+    print("=" * 80)
+
+    # Random split
+    X_train_random, X_test_random, y_train_random, y_test_random = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
 
     # Train models
-    models, X_train, X_test, y_train, y_test = train_models(X, y)
+    print("\n" + "=" * 80)
+    print("MODEL TRAINING - RANDOM SPLIT")
+    print("=" * 80)
+    models_random = train_models(X_train_random, X_test_random, y_train_random, y_test_random)
 
     # Evaluate models
-    results_df, test_results = evaluate_models(models, X_train, X_test, y_train, y_test, X, y)
+    results_random, test_results_random = evaluate_models(
+        models_random, X_train_random, X_test_random, y_train_random, y_test_random, X, y
+    )
 
-    # Get feature importance
-    importance_data = get_feature_importance(models, feature_names)
+    # ========================================================================
+    # STRATEGY 2: TEMPORAL SPLIT (2015 cutoff)
+    # ========================================================================
+    print("\n" + "=" * 80)
+    print("STRATEGY 2: TEMPORAL SPLIT (2015 CUTOFF)")
+    print("Train: 2000-2014, Test: 2015-2020 - realistic generalization")
+    print("=" * 80)
 
-    # Create visualizations
-    create_visualizations(models, results_df, test_results, importance_data,
-                         X_test, y_test, X, y)
+    # Get year information from original df_model (before encoding)
+    # We need to align indices
+    year_series = df_model['year']
+
+    # Create temporal split
+    train_mask = year_series < 2015
+    test_mask = year_series >= 2015
+
+    X_train_temporal = X[train_mask]
+    X_test_temporal = X[test_mask]
+    y_train_temporal = y[train_mask]
+    y_test_temporal = y[test_mask]
+
+    print(f"\n✓ Temporal split:")
+    print(f"  - Training: years < 2015 → {len(X_train_temporal)} cases")
+    print(f"  - Test: years ≥ 2015 → {len(X_test_temporal)} cases")
+    print(f"  - Train violation rate: {y_train_temporal.mean()*100:.1f}%")
+    print(f"  - Test violation rate: {y_test_temporal.mean()*100:.1f}%")
+
+    # Train models
+    print("\n" + "=" * 80)
+    print("MODEL TRAINING - TEMPORAL SPLIT")
+    print("=" * 80)
+    models_temporal = train_models(X_train_temporal, X_test_temporal, y_train_temporal, y_test_temporal)
+
+    # Evaluate models
+    results_temporal, test_results_temporal = evaluate_models(
+        models_temporal, X_train_temporal, X_test_temporal, y_train_temporal, y_test_temporal, X, y
+    )
+
+    # ========================================================================
+    # COMPARISON
+    # ========================================================================
+    print("\n" + "=" * 80)
+    print("SPLIT STRATEGY COMPARISON")
+    print("=" * 80)
+
+    print("\n📊 Random Split vs Temporal Split (Test Set ROC-AUC):")
+    print("-" * 80)
+    print(f"{'Model':<25} {'Random Split':<15} {'Temporal Split':<15} {'Difference':<15}")
+    print("-" * 80)
+
+    for model_name in test_results_random.keys():
+        random_auc = test_results_random[model_name]['roc_auc']
+        temporal_auc = test_results_temporal[model_name]['roc_auc']
+        diff = temporal_auc - random_auc
+        print(f"{model_name:<25} {random_auc:<15.3f} {temporal_auc:<15.3f} {diff:+.3f}")
+
+    print("-" * 80)
+
+    # Get feature importance (using random split models)
+    importance_data = get_feature_importance(models_random, feature_names)
+
+    # Create visualizations (using random split for main viz)
+    create_visualizations(models_random, results_random, test_results_random, importance_data,
+                         X_test_random, y_test_random, X, y)
 
     # Final summary
     print("\n" + "=" * 80)
     print("ANALYSIS COMPLETE")
     print("=" * 80)
     print("\n📊 Key Findings:")
-    print(f"  - Best model: {results_df.loc[results_df['roc_auc_mean'].idxmax(), 'model']}")
-    print(f"  - Best ROC-AUC: {results_df['roc_auc_mean'].max():.3f}")
+    print(f"  - Best model (Random Split): {results_random.loc[results_random['roc_auc_mean'].idxmax(), 'model']}")
+    print(f"  - Best CV ROC-AUC: {results_random['roc_auc_mean'].max():.3f}")
+    print(f"  - Best model (Temporal Split): {results_temporal.loc[results_temporal['roc_auc_mean'].idxmax(), 'model']}")
+    print(f"  - Best CV ROC-AUC: {results_temporal['roc_auc_mean'].max():.3f}")
     print(f"  - Total features: {len(feature_names)}")
     print(f"  - Dataset size: {len(X)} cases")
     print(f"\n✓ Output saved: ml_models_comparison.png")
+    print("\n💡 Interpretation:")
+    print("  - Random split: Optimistic performance (all years mixed)")
+    print("  - Temporal split: Realistic generalization (past→future prediction)")
+    print("  - Small differences suggest model generalizes well across time")
     print("\n" + "=" * 80)
 
 
