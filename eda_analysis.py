@@ -494,7 +494,7 @@ def create_interactive_dashboard(df):
         subplot_titles=(
             '📍 Top 15 Countries by Case Count',
             '⚖️ Violation Rate: Top 15 Countries',
-            '📈 Cases Over Time (2000-2024)',
+            '📈 Cases Over Time (1968-2020)',
             '📉 Violation Rate Over Time',
             '👥 Distribution of Applicant Types',
             '📊 Distribution of Violation Counts',
@@ -653,8 +653,10 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Violation<br>Rate', side='right'),
                 tickformat='.0%',
-                x=0.64,
-                len=0.35
+                x=0.60,
+                y=0.15,
+                len=0.35,
+                thickness=15
             ),
             name='Heatmap'
         ),
@@ -678,8 +680,10 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Correlation', side='right'),
                 tickformat='.2f',
-                x=1.0,
-                len=0.35
+                x=1.02,
+                y=0.15,
+                len=0.35,
+                thickness=15
             ),
             name='Correlation'
         ),
@@ -706,7 +710,7 @@ def create_interactive_dashboard(df):
     # Update layout
     fig.update_layout(
         title={
-            'text': '<b>ECHR Case Analysis - Interactive EDA Dashboard</b><br><sub>Exploratory Data Analysis (2000-2024) | Hover for details, click legend to toggle, drag to zoom</sub>',
+            'text': '<b>ECHR Case Analysis - Interactive EDA Dashboard</b><br><sub>Exploratory Data Analysis (1968-2020) | Hover for details, click legend to toggle, drag to zoom</sub>',
             'x': 0.5,
             'xanchor': 'center',
             'font': {'size': 20}
