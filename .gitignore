@@ -57,3 +57,6 @@ dmypy.json
 # Data files (optional - uncomment if needed)
 # *.csv
 # *.json
+
+# Interactive HTML dashboards (too large for git)
+*_interactive.html

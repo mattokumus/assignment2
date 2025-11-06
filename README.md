@@ -60,13 +60,15 @@ assignment2/
 │   └── ml_models_comparison.py            # ML models (RF, XGBoost, GB) comparison
 │
 ├── Visualizations:
-│   ├── eda_visualizations.png             # Country distributions, temporal trends
-│   ├── eda_correlation.png                # Variable correlations
-│   ├── eda_heatmap.png                    # Violation rate heatmap
+│   ├── eda_visualizations.png             # Country distributions, temporal trends (static)
+│   ├── eda_correlation.png                # Variable correlations (static)
+│   ├── eda_heatmap.png                    # Violation rate heatmap (static)
+│   ├── eda_interactive.html               # EDA interactive dashboard 🎯
 │   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves
 │   ├── judge_analysis_visualizations.png  # Judge variation, regional bias
 │   ├── hypothesis_test_visualizations.png # Statistical test results
-│   └── ml_models_comparison.png           # ML model performance & feature importance
+│   ├── ml_models_comparison.png           # ML model performance (static)
+│   └── ml_models_interactive.html         # ML models interactive dashboard 🎯
 │
 └── Documentation:
     ├── METHODOLOGY.md                     # Detailed statistical methodology
@@ -130,7 +132,17 @@ python3 assignment2.py
 
 # 2. Exploratory Data Analysis
 python3 eda_analysis.py
-# Output: eda_visualizations.png, eda_correlation.png, eda_heatmap.png
+# Outputs:
+#   - eda_visualizations.png (static - 6 charts)
+#   - eda_heatmap.png (static - Countries × Decades)
+#   - eda_correlation.png (static - correlation matrix)
+#   - eda_interactive.html (interactive Plotly dashboard) 🎯
+#
+# 🌐 Interactive HTML Dashboard Features:
+#   - Double-click to open in browser (no web server needed!)
+#   - Hover for detailed metrics
+#   - Drag to zoom, double-click to reset
+#   - Export as PNG via camera icon
 
 # 3. Logistic Regression Analysis
 python3 logistic_regression.py
