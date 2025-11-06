@@ -42,6 +42,10 @@ assignment2/
 ├── ANALYSIS_REPORT_EN.md                  # Comprehensive English report
 ├── ANALYSIS_REPORT_TR.md                  # Comprehensive Turkish report
 │
+├── Interactive Dashboard:
+│   ├── app.py                             # Streamlit dashboard application
+│   └── DASHBOARD_DEPLOYMENT.md            # Deployment guide
+│
 ├── Data Processing:
 │   ├── assignment2.py                     # Extract data from JSON to CSV
 │   ├── cases-2000.json                    # Raw ECHR case data (Git LFS)
@@ -93,6 +97,28 @@ pip install -r requirements.txt
 # Pull large files (if using Git LFS)
 git lfs pull
 ```
+
+### Interactive Dashboard (Recommended!)
+
+**Explore the data interactively with our Streamlit dashboard:**
+
+```bash
+# Run the interactive dashboard
+streamlit run app.py
+
+# Open browser at: http://localhost:8501
+```
+
+**Features:**
+- 🔍 Filter by country, region, year, article, violation status
+- 📊 Interactive Plotly visualizations
+- 📈 Real-time statistics and trends
+- 📥 Download filtered data as CSV
+- 📱 Responsive design
+
+**Deploy for free:** See [DASHBOARD_DEPLOYMENT.md](DASHBOARD_DEPLOYMENT.md)
+
+---
 
 ### Running Analyses
 
