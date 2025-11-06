@@ -56,7 +56,8 @@ assignment2/
 │   ├── eda_analysis.py                    # Exploratory Data Analysis
 │   ├── logistic_regression.py             # Country effect models with controls
 │   ├── judge_analysis.py                  # Judge-level analysis
-│   └── hypotesis_testing.py               # Chi-square & proportion tests
+│   ├── hypotesis_testing.py               # Chi-square & proportion tests
+│   └── ml_models_comparison.py            # ML models (RF, XGBoost, GB) comparison
 │
 ├── Visualizations:
 │   ├── eda_visualizations.png             # Country distributions, temporal trends
@@ -64,7 +65,8 @@ assignment2/
 │   ├── eda_heatmap.png                    # Violation rate heatmap
 │   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves
 │   ├── judge_analysis_visualizations.png  # Judge variation, regional bias
-│   └── hypothesis_test_visualizations.png # Statistical test results
+│   ├── hypothesis_test_visualizations.png # Statistical test results
+│   └── ml_models_comparison.png           # ML model performance & feature importance
 │
 └── Documentation:
     ├── METHODOLOGY.md                     # Detailed statistical methodology
@@ -141,6 +143,12 @@ python3 judge_analysis.py
 # 5. Hypothesis Testing
 python3 hypotesis_testing.py
 # Output: hypothesis_test_visualizations.png
+
+# 6. Machine Learning Models Comparison (NEW!)
+python3 ml_models_comparison.py
+# Output: ml_models_comparison.png
+# Models: Logistic Regression, Random Forest, XGBoost, Gradient Boosting
+# Evaluation: 5-fold cross-validation with ROC-AUC, F1, Precision, Recall
 ```
 
 ---
