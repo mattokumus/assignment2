@@ -67,7 +67,8 @@ assignment2/
 │   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves (static)
 │   ├── logistic_regression_interactive.html # Logistic regression interactive dashboard 🎯
 │   ├── judge_analysis_visualizations.png  # Judge variation, regional bias
-│   ├── hypothesis_test_visualizations.png # Statistical test results
+│   ├── hypothesis_test_visualizations.png # Statistical test results (static)
+│   ├── hypothesis_test_interactive.html   # Hypothesis testing interactive dashboard 🎯
 │   ├── ml_models_comparison.png           # ML model performance (static)
 │   └── ml_models_interactive.html         # ML models interactive dashboard 🎯
 │
@@ -164,7 +165,16 @@ python3 judge_analysis.py
 
 # 5. Hypothesis Testing
 python3 hypotesis_testing.py
-# Output: hypothesis_test_visualizations.png
+# Outputs:
+#   - hypothesis_test_visualizations.png (static - 6 charts)
+#   - hypothesis_test_interactive.html (interactive Plotly dashboard) 🎯
+#
+# 🌐 Interactive HTML Dashboard Features:
+#   - 95% Confidence intervals with error bars
+#   - Regional comparison (Eastern vs Western Europe)
+#   - Temporal comparison (Before vs After 2000)
+#   - Log scale scatter plot for sample size analysis
+#   - Hover for exact values and country names
 
 # 6. Machine Learning Models Comparison (NEW!)
 python3 ml_models_comparison.py
