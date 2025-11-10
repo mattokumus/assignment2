@@ -223,19 +223,20 @@ def regional_comparison(df):
     print("TEST 3: REGIONAL COMPARISON")
     print("=" * 80)
     
-    # Define country groups
+    # Define country groups (matching logistic_regression.py for consistency)
     eastern_europe = [
         'Russian Federation', 'Ukraine', 'Poland', 'Romania', 'Hungary',
         'Bulgaria', 'Croatia', 'Slovenia', 'Slovakia', 'Czechia',
         'Lithuania', 'Latvia', 'Estonia', 'Moldova, Republic of',
         'Serbia', 'Bosnia and Herzegovina', 'North Macedonia', 'Albania',
-        'Belarus', 'Armenia', 'Azerbaijan', 'Georgia'
+        'Armenia', 'Azerbaijan', 'Georgia', 'Turkey', 'Montenegro'
     ]
-    
+
     western_europe = [
         'United Kingdom', 'Germany', 'France', 'Italy', 'Spain',
         'Netherlands', 'Belgium', 'Austria', 'Switzerland', 'Sweden',
-        'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Greece'
+        'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Greece',
+        'Cyprus', 'Malta', 'Luxembourg', 'Iceland', 'San Marino', 'Liechtenstein'
     ]
     
     # Classify countries
