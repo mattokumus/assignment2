@@ -524,19 +524,25 @@ def create_visualizations(df, judge_panel_df, judge_violation_rates, judge_regio
     # Get top countries
     top_countries = df['country_name'].value_counts().head(10).index
     country_rates = df[df['country_name'].isin(top_countries)].groupby('country_name')['has_violation'].mean() * 100
+    country_counts_static = df['country_name'].value_counts().head(10)
     country_rates = country_rates.sort_values(ascending=False)
 
     colors_countries = ['coral' if rate > 90 else 'lightblue' for rate in country_rates.values]
 
-    ax6.barh(range(len(country_rates)), country_rates.values,
-             color=colors_countries, alpha=0.7, edgecolor='black')
+    bars = ax6.barh(range(len(country_rates)), country_rates.values,
+                    color=colors_countries, alpha=0.7, edgecolor='black')
     ax6.set_yticks(range(len(country_rates)))
     ax6.set_yticklabels([name[:20] for name in country_rates.index], fontsize=9)
-    ax6.set_xlabel('Violation Rate (%)')
-    ax6.set_title('Top 10 Countries by Case Count\n(Violation Rates)',
+    ax6.set_xlabel('Violation Rate (%)\n(Red = >90%, Blue = ≤90%)', fontsize=9)
+    ax6.set_title('Top 10 Countries (by Case Count)\nShowing: Violation Rates',
                   fontweight='bold', fontsize=11)
     ax6.invert_yaxis()
     ax6.set_xlim(0, 100)
+
+    # Add case counts as text
+    for i, (country, rate) in enumerate(country_rates.items()):
+        count = country_counts_static[country]
+        ax6.text(rate + 2, i, f'{count} cases', va='center', fontsize=8, color='gray')
 
     plt.tight_layout()
     plt.savefig('judge_analysis_visualizations.png', dpi=300, bbox_inches='tight')
@@ -613,6 +619,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
     # 6. Top 10 countries
     top_countries = df['country_name'].value_counts().head(10).index
     country_rates = df[df['country_name'].isin(top_countries)].groupby('country_name')['has_violation'].mean() * 100
+    country_counts = df['country_name'].value_counts().head(10)
     country_rates = country_rates.sort_values(ascending=True)  # For horizontal bar chart
 
     print("   Building interactive visualizations...")
@@ -626,7 +633,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
             '🌍 Do Judges Treat Eastern vs Western Europe Differently?<br><sub>(Positive = Harsher on Eastern, Negative = Harsher on Western)</sub>',
             '⚖️ President vs Non-President Violation Rates',
             '📈 Judge Experience vs Violation Rate (≥5 cases)',
-            '🌐 Top 10 Countries by Case Count'
+            '🌐 Top 10 Countries (by Case Count)<br><sub>Showing: Violation Rates</sub>'
         ),
         specs=[
             [{'type': 'histogram'}, {'type': 'bar'}, {'type': 'histogram'}],
@@ -841,6 +848,13 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
     country_colors = [colors['secondary'] if rate > 90 else colors['neutral']
                      for rate in country_rates.values]
 
+    # Create hover text with case counts
+    hover_texts = []
+    for country in country_rates.index:
+        count = country_counts[country]
+        rate = country_rates[country]
+        hover_texts.append(f'<b>{country}</b><br>Cases: {count}<br>Violation Rate: {rate:.1f}%')
+
     fig.add_trace(
         go.Bar(
             y=[name[:20] + '...' if len(name) > 20 else name for name in country_rates.index],
@@ -853,7 +867,8 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
             ),
             text=[f'{val:.1f}%' for val in country_rates.values],
             textposition='outside',
-            hovertemplate='<b>%{y}</b><br>Violation Rate: %{x:.1f}%<extra></extra>',
+            hovertemplate='%{hovertext}<extra></extra>',
+            hovertext=hover_texts,
             name='Countries',
             showlegend=False
         ),
@@ -866,7 +881,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
     fig.update_xaxes(title_text="Difference: Eastern minus Western (%)<br><sub>(+ = Harsher on Eastern, − = Harsher on Western)</sub>", row=1, col=3)
     fig.update_xaxes(title_text="", row=2, col=1)
     fig.update_xaxes(title_text="Number of Cases (Experience)", row=2, col=2)
-    fig.update_xaxes(title_text="Violation Rate (%)", row=2, col=3)
+    fig.update_xaxes(title_text="Violation Rate (%)<br><sub>(Red = >90%, Blue = ≤90%)</sub>", row=2, col=3)
 
     fig.update_yaxes(title_text="Number of Judges", row=1, col=1)
     fig.update_yaxes(title_text="Judge Name", row=1, col=2)
