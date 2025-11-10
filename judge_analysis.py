@@ -639,7 +639,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
             [{'type': 'histogram'}, {'type': 'bar'}, {'type': 'histogram'}],
             [{'type': 'bar'}, {'type': 'scatter'}, {'type': 'bar'}]
         ],
-        vertical_spacing=0.12,
+        vertical_spacing=0.18,
         horizontal_spacing=0.10
     )
 
