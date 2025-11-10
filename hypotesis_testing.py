@@ -572,8 +572,8 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
 
     print("   Preparing data...")
 
-    # 1. Top 15 countries with confidence intervals
-    top_15 = country_stats_df.head(15).copy()
+    # 1. Top 15 countries with confidence intervals (highest violation rates)
+    top_15 = country_stats_df.tail(15).copy()
     top_15['ci'] = 1.96 * np.sqrt(
         (top_15['violation_rate'] * (1 - top_15['violation_rate'])) / top_15['n_total']
     )
