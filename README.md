@@ -162,7 +162,19 @@ python3 logistic_regression.py
 
 # 4. Judge-Level Analysis
 python3 judge_analysis.py
-# Output: judge_analysis_visualizations.png
+# Outputs:
+#   - judge_analysis_visualizations.png (static - 6 charts)
+#   - judge_analysis_interactive.html (interactive Plotly dashboard) 🎯
+#
+# 🌐 Interactive HTML Dashboard Features:
+#   - Judge violation rate distribution (≥10 cases filter)
+#   - Top 15 most active judges by case count
+#   - Regional bias distribution (Eastern vs Western difference)
+#   - President vs Non-President violation rates comparison
+#   - Judge experience vs violation rate scatter plot
+#   - Top 10 countries by case count with violation rates
+#   - Hover for judge names, exact values, and statistics
+#   - Correlation coefficients and p-values displayed
 
 # 5. Hypothesis Testing
 python3 hypotesis_testing.py
