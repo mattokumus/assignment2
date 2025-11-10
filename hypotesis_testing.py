@@ -623,8 +623,8 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
             '🗺️ Regional Comparison: Eastern vs Western',
             '📅 Temporal: Before vs After 2000',
             '📈 Distribution of Violation Rates',
-            '🔍 Sample Size vs Violation Rate',
-            '⚖️ Top 5 vs Bottom 5 Countries'
+            '🔍 Sample Size vs Violation Rate (All Countries)',
+            '⚖️ Top 5 vs Bottom 5 Countries (≥30 cases)'
         ),
         specs=[
             [{'type': 'bar'}, {'type': 'bar'}, {'type': 'bar'}],
