@@ -462,12 +462,13 @@ def create_visualizations(df, judge_panel_df, judge_violation_rates, judge_regio
     if judge_region_pivot is not None and 'east_west_diff' in judge_region_pivot.columns:
         diffs = judge_region_pivot['east_west_diff'].dropna() * 100
         ax3.hist(diffs, bins=15, color='coral', alpha=0.7, edgecolor='black')
-        ax3.axvline(x=0, color='black', linestyle='--', linewidth=2, label='No bias')
+        ax3.axvline(x=0, color='black', linestyle='--', linewidth=2, label='No bias (0)')
         ax3.axvline(x=diffs.mean(), color='red', linestyle='--', linewidth=2,
                     label=f'Mean: {diffs.mean():.1f} pp')
-        ax3.set_xlabel('Eastern - Western Violation Rate (pp)')
+        ax3.set_xlabel('Difference: Eastern minus Western (%)\n(+ = Harsher on Eastern, - = Harsher on Western)',
+                      fontsize=9)
         ax3.set_ylabel('Number of Judges')
-        ax3.set_title('Judge Regional Bias Distribution\n(East - West difference)',
+        ax3.set_title('Do Judges Treat Eastern vs Western\nEurope Differently?',
                       fontweight='bold', fontsize=11)
         ax3.legend()
     else:
@@ -622,7 +623,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
         subplot_titles=(
             '📊 Judge Violation Rate Distribution (≥10 cases)',
             '👨‍⚖️ Top 15 Most Active Judges',
-            '🌍 Regional Bias: Eastern vs Western Europe',
+            '🌍 Do Judges Treat Eastern vs Western Europe Differently?<br><sub>(Positive = Harsher on Eastern, Negative = Harsher on Western)</sub>',
             '⚖️ President vs Non-President Violation Rates',
             '📈 Judge Experience vs Violation Rate (≥5 cases)',
             '🌐 Top 10 Countries by Case Count'
@@ -712,7 +713,12 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
                 marker_opacity=0.7,
                 marker_line_color='black',
                 marker_line_width=1,
-                hovertemplate='<b>East-West Diff: %{x:.1f} pp</b><br>Number of Judges: %{y}<extra></extra>',
+                hovertemplate='<b>Difference: %{x:+.1f} pp</b><br>' +
+                              'Number of Judges: %{y}<br>' +
+                              '<i>(' +
+                              '<span style="color:red">Positive</span> = Harsher on Eastern, ' +
+                              '<span style="color:blue">Negative</span> = Harsher on Western' +
+                              ')</i><extra></extra>',
                 name='Regional Bias',
                 showlegend=False
             ),
@@ -740,11 +746,19 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
             row=1, col=3
         )
 
+        # Determine interpretation based on mean
+        if mean_diff > 5:
+            interpretation = "Avg: Judges harsher on Eastern"
+        elif mean_diff < -5:
+            interpretation = "Avg: Judges harsher on Western"
+        else:
+            interpretation = "Avg: Judges relatively balanced"
+
         fig.add_annotation(
             x=mean_diff,
             y=0.95,
             yref='paper',
-            text=f'Mean: {mean_diff:.1f} pp',
+            text=f'{interpretation}<br>Mean: {mean_diff:+.1f} pp',
             showarrow=True,
             arrowhead=2,
             arrowcolor='red',
@@ -849,7 +863,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
     # Update axes labels
     fig.update_xaxes(title_text="Violation Rate (%)", row=1, col=1)
     fig.update_xaxes(title_text="Number of Cases", row=1, col=2)
-    fig.update_xaxes(title_text="Eastern - Western Violation Rate (pp)", row=1, col=3)
+    fig.update_xaxes(title_text="Difference: Eastern minus Western (%)<br><sub>(+ = Harsher on Eastern, − = Harsher on Western)</sub>", row=1, col=3)
     fig.update_xaxes(title_text="", row=2, col=1)
     fig.update_xaxes(title_text="Number of Cases (Experience)", row=2, col=2)
     fig.update_xaxes(title_text="Violation Rate (%)", row=2, col=3)
