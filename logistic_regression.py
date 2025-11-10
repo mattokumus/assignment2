@@ -564,11 +564,11 @@ def create_interactive_dashboard(baseline_result, full_result, regional_result,
     fig = make_subplots(
         rows=2, cols=3,
         subplot_titles=(
-            '📊 All Countries: Odds Ratios (Log Scale)',
-            '🥧 Country Significance After Controls',
+            '📊 All Countries: Odds Ratios (Log Scale, ≥30 cases)',
+            '🥧 Country Significance After Controls (≥30 cases)',
             '📈 Model Fit Comparison (Pseudo R²)',
             '📉 ROC Curve - Predictive Performance',
-            '📊 Distribution of Odds Ratios',
+            '📊 Distribution of Odds Ratios (≥30 cases)',
             '🎯 Top 15 Feature Importance'
         ),
         specs=[

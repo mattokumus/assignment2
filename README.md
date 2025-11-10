@@ -158,6 +158,7 @@ python3 logistic_regression.py
 #   - Hover for exact OR values and p-values
 #   - Zoom, pan, and export as PNG
 #   - Works offline - no internet needed!
+#   - NOTE: Only countries with ≥30 cases included (for statistical reliability)
 
 # 4. Judge-Level Analysis
 python3 judge_analysis.py
