@@ -894,7 +894,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
     fig.update_xaxes(title_text="Violation Rate (%)<br><sub>(Red = >90%, Blue = ≤90%)</sub>", row=2, col=3)
 
     fig.update_yaxes(title_text="Number of Judges", row=1, col=1)
-    fig.update_yaxes(title_text="Judge Name", row=1, col=2)
+    fig.update_yaxes(title_text="", row=1, col=2)  # No label - already in title "Top 15 Most Active Judges"
     fig.update_yaxes(title_text="Number of Judges", row=1, col=3)
     fig.update_yaxes(title_text="Violation Rate (%)", row=2, col=1)
     fig.update_yaxes(title_text="Violation Rate (%)", row=2, col=2)
