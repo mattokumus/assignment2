@@ -64,7 +64,8 @@ assignment2/
 │   ├── eda_correlation.png                # Variable correlations (static)
 │   ├── eda_heatmap.png                    # Violation rate heatmap (static)
 │   ├── eda_interactive.html               # EDA interactive dashboard 🎯
-│   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves
+│   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves (static)
+│   ├── logistic_regression_interactive.html # Logistic regression interactive dashboard 🎯
 │   ├── judge_analysis_visualizations.png  # Judge variation, regional bias
 │   ├── hypothesis_test_visualizations.png # Statistical test results
 │   ├── ml_models_comparison.png           # ML model performance (static)
@@ -146,7 +147,16 @@ python3 eda_analysis.py
 
 # 3. Logistic Regression Analysis
 python3 logistic_regression.py
-# Output: logistic_regression_analysis.png
+# Outputs:
+#   - logistic_regression_analysis.png (static - 6 charts)
+#   - logistic_regression_interactive.html (interactive Plotly dashboard) 🎯
+#
+# 🌐 Interactive HTML Dashboard Features:
+#   - LOG SCALE for odds ratios (handles Moldova outlier!)
+#   - All countries visible (not just top 10)
+#   - Hover for exact OR values and p-values
+#   - Zoom, pan, and export as PNG
+#   - Works offline - no internet needed!
 
 # 4. Judge-Level Analysis
 python3 judge_analysis.py
