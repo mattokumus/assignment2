@@ -451,7 +451,8 @@ def create_visualizations(df, judge_panel_df, judge_violation_rates, judge_regio
 
     ax2.barh(range(len(top_judges)), top_judges.values, color=colors_judges, alpha=0.7)
     ax2.set_yticks(range(len(top_judges)))
-    ax2.set_yticklabels([name[:30] for name in top_judges.index], fontsize=8)
+    # Truncate long judge names to prevent overflow (22 chars max)
+    ax2.set_yticklabels([name[:22] + '...' if len(name) > 22 else name for name in top_judges.index], fontsize=8)
     ax2.set_xlabel('Number of Cases')
     ax2.set_title('Top 15 Most Active Judges', fontweight='bold', fontsize=11)
     ax2.invert_yaxis()
@@ -640,7 +641,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
             [{'type': 'bar'}, {'type': 'scatter'}, {'type': 'bar'}]
         ],
         vertical_spacing=0.18,
-        horizontal_spacing=0.10
+        horizontal_spacing=0.12
     )
 
     # === ROW 1, COL 1: Judge Violation Rate Distribution ===
@@ -691,9 +692,17 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
                                                [i/(len(top_judges_df)-1)
                                                 for i in range(len(top_judges_df))])
 
+    # Truncate long names to prevent overflow into adjacent graphs
+    truncated_names = []
+    for name in top_judges_df['judge']:
+        if len(name) > 22:
+            truncated_names.append(name[:22] + '...')
+        else:
+            truncated_names.append(name)
+
     fig.add_trace(
         go.Bar(
-            y=[name[:30] + '...' if len(name) > 30 else name for name in top_judges_df['judge']],
+            y=truncated_names,
             x=top_judges_df['cases'],
             orientation='h',
             marker=dict(
@@ -703,7 +712,8 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
             ),
             text=top_judges_df['cases'],
             textposition='outside',
-            hovertemplate='<b>%{y}</b><br>Cases: %{x}<extra></extra>',
+            hovertemplate='<b>%{customdata}</b><br>Cases: %{x}<extra></extra>',
+            customdata=top_judges_df['judge'],  # Full names in hover
             name='Cases',
             showlegend=False
         ),
