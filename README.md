@@ -175,6 +175,7 @@ python3 hypotesis_testing.py
 #   - Temporal comparison (Before vs After 2000)
 #   - Log scale scatter plot for sample size analysis
 #   - Hover for exact values and country names
+#   - NOTE: Only countries with ≥30 cases included (for statistical reliability)
 
 # 6. Machine Learning Models Comparison (NEW!)
 python3 ml_models_comparison.py
