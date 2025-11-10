@@ -22,6 +22,12 @@ from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
 
+# Interactive visualization libraries
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import plotly.express as px
+from pathlib import Path
+
 # Set visualization style
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
@@ -537,6 +543,367 @@ def create_visualizations(df, judge_panel_df, judge_violation_rates, judge_regio
     plt.close()
 
 
+def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judge_region_pivot):
+    """
+    Create comprehensive interactive Plotly HTML dashboard for Judge Analysis
+
+    Generates standalone HTML file with 6 interactive visualizations:
+    - Judge violation rate distribution (judges with 10+ cases)
+    - Top 15 most active judges by case count
+    - Regional bias distribution (Eastern - Western difference)
+    - President vs Non-President violation rates
+    - Judge experience vs violation rate scatter
+    - Top 10 countries by case count with violation rates
+
+    Output: judge_analysis_interactive.html (standalone, no web server needed)
+    """
+    print("\n" + "=" * 80)
+    print("📊 CREATING INTERACTIVE PLOTLY DASHBOARD")
+    print("=" * 80)
+
+    # Color scheme
+    colors = {
+        'primary': '#4682b4',  # steelblue
+        'secondary': '#ff7f50',  # coral
+        'accent': '#9370db',  # purple
+        'neutral': '#87ceeb',  # lightblue
+        'highlight': '#ff6347',  # tomato
+        'viridis': px.colors.sequential.Viridis
+    }
+
+    print("   Preparing data...")
+
+    # 1. Judge violation rate distribution (≥10 cases)
+    judge_viol_rates_filtered = judge_violation_rates[judge_violation_rates['count'] >= 10].copy()
+    overall_mean = df['has_violation'].mean() * 100
+
+    # 2. Top 15 judges by case count
+    top_judges = judge_panel_df['judge_name'].value_counts().head(15)
+    top_judges_df = pd.DataFrame({
+        'judge': top_judges.index,
+        'cases': top_judges.values
+    })
+
+    # 3. Regional bias
+    if judge_region_pivot is not None and 'east_west_diff' in judge_region_pivot.columns:
+        regional_diffs = judge_region_pivot['east_west_diff'].dropna() * 100
+        has_regional_data = True
+    else:
+        has_regional_data = False
+
+    # 4. President vs non-president
+    president_rates = judge_panel_df.groupby('is_president')['has_violation'].mean() * 100
+
+    # 5. Judge experience
+    judge_stats = judge_panel_df.groupby('judge_name').agg({
+        'has_violation': 'mean',
+        'case_id': 'nunique'
+    }).reset_index()
+    judge_stats.columns = ['judge_name', 'violation_rate', 'case_count']
+    judge_stats_filtered = judge_stats[judge_stats['case_count'] >= 5].copy()
+
+    # Calculate correlation
+    if len(judge_stats_filtered) > 2:
+        corr, p_val = stats.pearsonr(judge_stats_filtered['case_count'],
+                                     judge_stats_filtered['violation_rate'])
+    else:
+        corr, p_val = 0, 1
+
+    # 6. Top 10 countries
+    top_countries = df['country_name'].value_counts().head(10).index
+    country_rates = df[df['country_name'].isin(top_countries)].groupby('country_name')['has_violation'].mean() * 100
+    country_rates = country_rates.sort_values(ascending=True)  # For horizontal bar chart
+
+    print("   Building interactive visualizations...")
+
+    # Create 2x3 subplot grid
+    fig = make_subplots(
+        rows=2, cols=3,
+        subplot_titles=(
+            '📊 Judge Violation Rate Distribution (≥10 cases)',
+            '👨‍⚖️ Top 15 Most Active Judges',
+            '🌍 Regional Bias: Eastern vs Western Europe',
+            '⚖️ President vs Non-President Violation Rates',
+            '📈 Judge Experience vs Violation Rate (≥5 cases)',
+            '🌐 Top 10 Countries by Case Count'
+        ),
+        specs=[
+            [{'type': 'histogram'}, {'type': 'bar'}, {'type': 'histogram'}],
+            [{'type': 'bar'}, {'type': 'scatter'}, {'type': 'bar'}]
+        ],
+        vertical_spacing=0.12,
+        horizontal_spacing=0.10
+    )
+
+    # === ROW 1, COL 1: Judge Violation Rate Distribution ===
+    fig.add_trace(
+        go.Histogram(
+            x=judge_viol_rates_filtered['mean'] * 100,
+            nbinsx=20,
+            marker_color=colors['primary'],
+            marker_opacity=0.7,
+            marker_line_color='black',
+            marker_line_width=1,
+            hovertemplate='<b>Violation Rate: %{x:.1f}%</b><br>Number of Judges: %{y}<extra></extra>',
+            name='Judges',
+            showlegend=False
+        ),
+        row=1, col=1
+    )
+
+    # Add overall mean line
+    fig.add_shape(
+        type='line',
+        x0=overall_mean, x1=overall_mean,
+        y0=0, y1=1,
+        yref='paper',
+        line=dict(color='red', width=2, dash='dash'),
+        row=1, col=1
+    )
+
+    fig.add_annotation(
+        x=overall_mean,
+        y=0.95,
+        yref='paper',
+        text=f'Overall Mean: {overall_mean:.1f}%',
+        showarrow=True,
+        arrowhead=2,
+        arrowcolor='red',
+        ax=50,
+        ay=-30,
+        font=dict(size=10, color='red'),
+        bgcolor='white',
+        bordercolor='red',
+        borderwidth=1,
+        row=1, col=1
+    )
+
+    # === ROW 1, COL 2: Top 15 Judges ===
+    judge_colors = px.colors.sample_colorscale('Viridis',
+                                               [i/(len(top_judges_df)-1)
+                                                for i in range(len(top_judges_df))])
+
+    fig.add_trace(
+        go.Bar(
+            y=[name[:30] + '...' if len(name) > 30 else name for name in top_judges_df['judge']],
+            x=top_judges_df['cases'],
+            orientation='h',
+            marker=dict(
+                color=judge_colors,
+                opacity=0.7,
+                line=dict(color='black', width=1)
+            ),
+            text=top_judges_df['cases'],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Cases: %{x}<extra></extra>',
+            name='Cases',
+            showlegend=False
+        ),
+        row=1, col=2
+    )
+
+    # === ROW 1, COL 3: Regional Bias ===
+    if has_regional_data:
+        fig.add_trace(
+            go.Histogram(
+                x=regional_diffs,
+                nbinsx=15,
+                marker_color=colors['secondary'],
+                marker_opacity=0.7,
+                marker_line_color='black',
+                marker_line_width=1,
+                hovertemplate='<b>East-West Diff: %{x:.1f} pp</b><br>Number of Judges: %{y}<extra></extra>',
+                name='Regional Bias',
+                showlegend=False
+            ),
+            row=1, col=3
+        )
+
+        # Add no-bias line
+        fig.add_shape(
+            type='line',
+            x0=0, x1=0,
+            y0=0, y1=1,
+            yref='paper',
+            line=dict(color='black', width=2, dash='dash'),
+            row=1, col=3
+        )
+
+        # Add mean line
+        mean_diff = regional_diffs.mean()
+        fig.add_shape(
+            type='line',
+            x0=mean_diff, x1=mean_diff,
+            y0=0, y1=1,
+            yref='paper',
+            line=dict(color='red', width=2, dash='dash'),
+            row=1, col=3
+        )
+
+        fig.add_annotation(
+            x=mean_diff,
+            y=0.95,
+            yref='paper',
+            text=f'Mean: {mean_diff:.1f} pp',
+            showarrow=True,
+            arrowhead=2,
+            arrowcolor='red',
+            ax=40 if mean_diff < 0 else -40,
+            ay=-30,
+            font=dict(size=10, color='red'),
+            bgcolor='white',
+            bordercolor='red',
+            borderwidth=1,
+            row=1, col=3
+        )
+    else:
+        fig.add_annotation(
+            x=0.5, y=0.5,
+            xref='x3', yref='y3',
+            text='Insufficient Data',
+            showarrow=False,
+            font=dict(size=14),
+            row=1, col=3
+        )
+
+    # === ROW 2, COL 1: President vs Non-President ===
+    president_labels = ['Non-President', 'President']
+    president_values = [president_rates[False], president_rates[True]]
+    president_colors = [colors['neutral'], colors['secondary']]
+
+    fig.add_trace(
+        go.Bar(
+            x=president_labels,
+            y=president_values,
+            marker=dict(
+                color=president_colors,
+                opacity=0.7,
+                line=dict(color='black', width=1)
+            ),
+            text=[f'{val:.1f}%' for val in president_values],
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>Violation Rate: %{y:.1f}%<extra></extra>',
+            name='President Effect',
+            showlegend=False
+        ),
+        row=2, col=1
+    )
+
+    # === ROW 2, COL 2: Experience vs Violation Rate Scatter ===
+    fig.add_trace(
+        go.Scatter(
+            x=judge_stats_filtered['case_count'],
+            y=judge_stats_filtered['violation_rate'] * 100,
+            mode='markers',
+            marker=dict(
+                size=8,
+                color=colors['accent'],
+                opacity=0.6,
+                line=dict(color='black', width=0.5)
+            ),
+            text=judge_stats_filtered['judge_name'],
+            hovertemplate='<b>%{text}</b><br>Cases: %{x}<br>Violation Rate: %{y:.1f}%<extra></extra>',
+            name='Judges',
+            showlegend=False
+        ),
+        row=2, col=2
+    )
+
+    # Add correlation annotation
+    fig.add_annotation(
+        x=0.05, y=0.95,
+        xref='x5', yref='paper',
+        text=f'r = {corr:.3f}<br>p = {p_val:.3f}',
+        showarrow=False,
+        font=dict(size=11),
+        bgcolor='white',
+        bordercolor='black',
+        borderwidth=1,
+        align='left',
+        row=2, col=2
+    )
+
+    # === ROW 2, COL 3: Top 10 Countries ===
+    country_colors = [colors['secondary'] if rate > 90 else colors['neutral']
+                     for rate in country_rates.values]
+
+    fig.add_trace(
+        go.Bar(
+            y=[name[:20] + '...' if len(name) > 20 else name for name in country_rates.index],
+            x=country_rates.values,
+            orientation='h',
+            marker=dict(
+                color=country_colors,
+                opacity=0.7,
+                line=dict(color='black', width=1)
+            ),
+            text=[f'{val:.1f}%' for val in country_rates.values],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Violation Rate: %{x:.1f}%<extra></extra>',
+            name='Countries',
+            showlegend=False
+        ),
+        row=2, col=3
+    )
+
+    # Update axes labels
+    fig.update_xaxes(title_text="Violation Rate (%)", row=1, col=1)
+    fig.update_xaxes(title_text="Number of Cases", row=1, col=2)
+    fig.update_xaxes(title_text="Eastern - Western Violation Rate (pp)", row=1, col=3)
+    fig.update_xaxes(title_text="", row=2, col=1)
+    fig.update_xaxes(title_text="Number of Cases (Experience)", row=2, col=2)
+    fig.update_xaxes(title_text="Violation Rate (%)", row=2, col=3)
+
+    fig.update_yaxes(title_text="Number of Judges", row=1, col=1)
+    fig.update_yaxes(title_text="Judge Name", row=1, col=2)
+    fig.update_yaxes(title_text="Number of Judges", row=1, col=3)
+    fig.update_yaxes(title_text="Violation Rate (%)", row=2, col=1)
+    fig.update_yaxes(title_text="Violation Rate (%)", row=2, col=2)
+    fig.update_yaxes(title_text="Country Name", row=2, col=3)
+
+    # Update layout
+    fig.update_layout(
+        title=dict(
+            text='<b>Judge-Level Analysis: ECHR Cases (1968-2020)</b><br>' +
+                 '<sub>Disentangling Judge Effects from Country Effects</sub>',
+            font=dict(size=20),
+            x=0.5,
+            xanchor='center'
+        ),
+        height=1000,
+        showlegend=False,
+        hovermode='closest',
+        plot_bgcolor='rgba(240,240,240,0.5)',
+        paper_bgcolor='white'
+    )
+
+    # Update all subplots background
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.2)')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.2)')
+
+    # Save interactive HTML
+    output_file = 'judge_analysis_interactive.html'
+    fig.write_html(
+        output_file,
+        config={
+            'displayModeBar': True,
+            'displaylogo': False,
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+            'toImageButtonOptions': {
+                'format': 'png',
+                'filename': 'echr_judge_analysis_dashboard',
+                'height': 1000,
+                'width': 1800,
+                'scale': 2
+            }
+        }
+    )
+
+    print(f"\n✓ Interactive dashboard saved: {output_file}")
+    print(f"   File size: {Path(output_file).stat().st_size / 1024 / 1024:.1f} MB")
+    print(f"   Open in browser: file://{Path(output_file).absolute()}")
+
+
 def generate_final_summary(df, judge_panel_df, result1, result2):
     """Generate comprehensive final summary"""
     print("\n" + "=" * 80)
@@ -656,12 +1023,16 @@ def main():
     # Visualizations
     create_visualizations(df, judge_panel_df, judge_violation_rates, judge_region_pivot)
 
+    # Interactive dashboard
+    create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judge_region_pivot)
+
     # Final summary
     generate_final_summary(df, judge_panel_df, result1, result2)
 
     print("\n✓ All analyses completed successfully!")
     print("\nGenerated files:")
-    print("  📊 judge_analysis_visualizations.png")
+    print("  📊 judge_analysis_visualizations.png (static)")
+    print("  🌐 judge_analysis_interactive.html (interactive)")
 
 
 if __name__ == "__main__":
