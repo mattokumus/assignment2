@@ -654,8 +654,10 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Violation<br>Rate', side='right'),
                 tickformat='.0%',
-                x=0.56,
+                x=0.63,
+                xanchor='left',
                 y=0.15,
+                yanchor='middle',
                 len=0.35,
                 thickness=12
             ),
@@ -681,8 +683,10 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Correlation', side='right'),
                 tickformat='.2f',
-                x=1.04,
+                x=1.05,
+                xanchor='left',
                 y=0.15,
+                yanchor='middle',
                 len=0.35,
                 thickness=12
             ),
