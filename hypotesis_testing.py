@@ -100,6 +100,12 @@ def proportion_tests_top_countries(df, min_cases=30):
     """
     Test 2: Proportion tests for top countries
     Compare violation rates between country pairs
+
+    Args:
+        df: DataFrame with case data
+        min_cases: Minimum number of cases required for a country to be included (default: 30)
+                   This ensures statistical reliability - countries with too few cases are excluded
+                   (e.g., Liechtenstein with 2 cases, Iceland with 4 cases)
     """
     print("\n" + "=" * 80)
     print("TEST 2: PROPORTION TESTS (Country Pairs)")
@@ -546,12 +552,16 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
     Create comprehensive interactive Plotly HTML dashboard for Hypothesis Tests
 
     Generates standalone HTML file with 6 interactive visualizations:
-    - Violation rates by country with 95% CI error bars
+    - Violation rates by country with 95% CI error bars (only countries with ≥30 cases)
     - Eastern vs Western Europe comparison
     - Temporal: Before vs After 2000
     - Distribution of violation rates across countries
     - Sample size vs violation rate scatter (log scale)
     - Top 5 vs Bottom 5 countries comparison
+
+    Note: country_stats_df is already filtered to include only countries with ≥30 cases
+          for statistical reliability. This excludes small-sample countries like
+          Liechtenstein (2 cases), Iceland (4 cases), etc.
 
     Output: hypothesis_test_interactive.html (standalone, no web server needed)
     """
@@ -609,7 +619,7 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
     fig = make_subplots(
         rows=2, cols=3,
         subplot_titles=(
-            '📊 Violation Rates by Country (with 95% CI)',
+            '📊 Violation Rates by Country (with 95% CI, ≥30 cases)',
             '🗺️ Regional Comparison: Eastern vs Western',
             '📅 Temporal: Before vs After 2000',
             '📈 Distribution of Violation Rates',
