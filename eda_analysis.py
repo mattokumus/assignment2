@@ -507,6 +507,7 @@ def create_interactive_dashboard(df):
             [{'type': 'scatter'}, {'type': 'bar'}, {'type': 'bar'}],
             [{'type': 'heatmap', 'colspan': 2}, None, {'type': 'heatmap'}]
         ],
+        column_widths=[0.26, 0.26, 0.30],  # Adjust column widths for better spacing
         vertical_spacing=0.12,
         horizontal_spacing=0.10,
         row_heights=[0.30, 0.30, 0.40]
@@ -653,10 +654,10 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Violation<br>Rate', side='right'),
                 tickformat='.0%',
-                x=0.60,
+                x=0.56,
                 y=0.15,
                 len=0.35,
-                thickness=15
+                thickness=12
             ),
             name='Heatmap'
         ),
@@ -680,10 +681,10 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Correlation', side='right'),
                 tickformat='.2f',
-                x=1.02,
+                x=1.04,
                 y=0.15,
                 len=0.35,
-                thickness=15
+                thickness=12
             ),
             name='Correlation'
         ),
