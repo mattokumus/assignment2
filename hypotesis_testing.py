@@ -782,40 +782,35 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
     )
 
     # === ROW 2, COL 3: Top 5 vs Bottom 5 ===
-    y_pos = list(range(5))
+    # Combine bottom 5 and top 5 into single view with all 10 countries
+    all_countries = list(bottom_5_countries['country'].values) + list(top_5_countries['country'].values)
+    all_rates = list(bottom_5_countries['violation_rate'].values * 100) + list(top_5_countries['violation_rate'].values * 100)
+    bar_colors = [colors['low']] * 5 + [colors['high']] * 5
 
-    # Bottom 5 (lowest rates)
     fig.add_trace(
         go.Bar(
-            y=[f'#{i+1}' for i in range(5)],
-            x=bottom_5_countries['violation_rate'].values * 100,
+            y=all_countries,
+            x=all_rates,
             orientation='h',
-            marker_color=colors['low'],
+            marker_color=bar_colors,
             marker_opacity=0.7,
             marker_line_color='black',
             marker_line_width=1,
-            text=bottom_5_countries['country'].values,
-            hovertemplate='<b>%{text}</b><br>Violation Rate: %{x:.1f}%<extra></extra>',
-            name='Lowest Rates'
+            text=[f'{rate:.1f}%' for rate in all_rates],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Violation Rate: %{x:.1f}%<extra></extra>',
+            name='Countries',
+            showlegend=False
         ),
         row=2, col=3
     )
 
-    # Top 5 (highest rates)
-    fig.add_trace(
-        go.Bar(
-            y=[f'#{i+1}' for i in range(5)],
-            x=top_5_countries['violation_rate'].values * 100,
-            orientation='h',
-            marker_color=colors['high'],
-            marker_opacity=0.7,
-            marker_line_color='black',
-            marker_line_width=1,
-            text=top_5_countries['country'].values,
-            hovertemplate='<b>%{text}</b><br>Violation Rate: %{x:.1f}%<extra></extra>',
-            name='Highest Rates',
-            visible='legendonly'  # Hidden by default
-        ),
+    # Add separator line between bottom 5 and top 5
+    fig.add_shape(
+        type='line',
+        x0=0, x1=100,
+        y0=4.5, y1=4.5,
+        line=dict(color='gray', width=2, dash='dash'),
         row=2, col=3
     )
 
