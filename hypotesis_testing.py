@@ -484,11 +484,11 @@ def create_visualizations(df, country_stats_df, eastern_rate, western_rate):
     country_rates = df.groupby('country_name')['has_violation'].mean() * 100
     
     ax4.hist(country_rates, bins=20, color='purple', alpha=0.7, edgecolor='black')
-    ax4.axvline(x=country_rates.mean(), color='red', linestyle='--', 
+    ax4.axvline(x=country_rates.mean(), color='red', linestyle='--',
                 label=f'Mean: {country_rates.mean():.1f}%', linewidth=2)
     ax4.set_xlabel('Violation Rate (%)')
     ax4.set_ylabel('Number of Countries')
-    ax4.set_title('Distribution of Violation Rates\nAcross Countries', fontweight='bold')
+    ax4.set_title('How Many Countries Have\nEach Violation Rate?', fontweight='bold')
     ax4.legend()
     
     # 5. Sample size vs violation rate scatter
@@ -623,7 +623,7 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
             '📊 Violation Rates by Country (with 95% CI, ≥30 cases)',
             '🗺️ Regional Comparison: Eastern vs Western',
             '📅 Temporal: Before vs After 2000',
-            '📈 Distribution of Violation Rates',
+            '📈 How Many Countries Have Each Violation Rate?',
             '🔍 Sample Size vs Violation Rate (All Countries)',
             '⚖️ Top 5 vs Bottom 5 Countries (≥30 cases)'
         ),
@@ -731,14 +731,14 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
             marker_opacity=0.7,
             marker_line_color='black',
             marker_line_width=1,
-            hovertemplate='<b>Violation Rate: %{x:.1f}%</b><br>Count: %{y}<extra></extra>',
+            hovertemplate='<b>Violation Rate: %{x:.1f}%</b><br>Number of Countries: %{y}<extra></extra>',
             name='Distribution',
             showlegend=False
         ),
         row=2, col=1
     )
 
-    # Add mean line
+    # Add mean line with annotation
     mean_rate = country_rates.mean() * 100
     fig.add_shape(
         type='line',
@@ -746,6 +746,26 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
         y0=0, y1=1,
         yref='paper',
         line=dict(color='red', width=2, dash='dash'),
+        row=2, col=1
+    )
+
+    # Add annotation for mean
+    fig.add_annotation(
+        x=mean_rate,
+        y=0.95,
+        yref='paper',
+        text=f'Mean: {mean_rate:.1f}%',
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=2,
+        arrowcolor='red',
+        ax=-50,
+        ay=-30,
+        font=dict(size=11, color='red'),
+        bgcolor='white',
+        bordercolor='red',
+        borderwidth=1,
         row=2, col=1
     )
 
@@ -836,7 +856,7 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
     fig.update_yaxes(title_text="Country", row=1, col=1)
     fig.update_yaxes(title_text="Violation Rate (%)", row=1, col=2)
     fig.update_yaxes(title_text="Violation Rate (%)", row=1, col=3)
-    fig.update_yaxes(title_text="Frequency", row=2, col=1)
+    fig.update_yaxes(title_text="Number of Countries", row=2, col=1)
     fig.update_yaxes(title_text="Violation Rate (%)", row=2, col=2)
     fig.update_yaxes(title_text="Rank", row=2, col=3)
 
