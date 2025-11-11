@@ -22,6 +22,12 @@ from statsmodels.formula.api import logit
 import warnings
 warnings.filterwarnings('ignore')
 
+# Interactive visualization libraries
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import plotly.express as px
+from pathlib import Path
+
 # Set visualization style
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
@@ -43,13 +49,14 @@ def load_and_prepare_data(filename='extracted_data.csv'):
         'Bulgaria', 'Croatia', 'Slovenia', 'Slovakia', 'Czechia',
         'Lithuania', 'Latvia', 'Estonia', 'Moldova, Republic of',
         'Serbia', 'Bosnia and Herzegovina', 'North Macedonia', 'Albania',
-        'Belarus', 'Armenia', 'Azerbaijan', 'Georgia'
+        'Armenia', 'Azerbaijan', 'Georgia', 'Turkey', 'Montenegro'
     ]
-    
+
     western_europe = [
         'United Kingdom', 'Germany', 'France', 'Italy', 'Spain',
         'Netherlands', 'Belgium', 'Austria', 'Switzerland', 'Sweden',
-        'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Greece'
+        'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Greece',
+        'Cyprus', 'Malta', 'Luxembourg', 'Iceland', 'San Marino', 'Liechtenstein'
     ]
     
     df['region'] = df['country_name'].apply(
@@ -496,6 +503,281 @@ def create_visualizations(baseline_result, full_result, country_ors_df,
     plt.close()
 
 
+def create_interactive_dashboard(baseline_result, full_result, regional_result,
+                                 country_ors_df, clf, X_test, y_test, y_pred_proba):
+    """
+    Create comprehensive interactive Plotly HTML dashboard for Logistic Regression
+
+    Uses LOG SCALE for odds ratios to handle outliers (e.g., Moldova)
+
+    Generates standalone HTML file with 6 interactive visualizations:
+    - All countries' odds ratios (log scale)
+    - Country significance pie chart
+    - Model fit comparison
+    - ROC curve
+    - Odds ratio distribution
+    - Feature importance
+
+    Output: logistic_regression_interactive.html (standalone, no web server needed)
+    """
+    print("\n" + "=" * 80)
+    print("📊 CREATING INTERACTIVE PLOTLY DASHBOARD")
+    print("=" * 80)
+
+    # Color scheme
+    colors = {
+        'positive': '#d62728',    # Red (OR > 1)
+        'negative': '#2ca02c',    # Green (OR < 1)
+        'significant': '#ff6b6b',
+        'not_significant': '#95e1d3',
+        'baseline': '#1f77b4',
+        'full': '#ff7f0e',
+        'regional': '#2ca02c'
+    }
+
+    print("   Preparing data...")
+
+    # Prepare country odds ratios data
+    country_ors_sorted = country_ors_df.sort_values('OR', ascending=True)
+    sig_countries = (country_ors_df['p_value'] < 0.05).sum()
+    non_sig = len(country_ors_df) - sig_countries
+
+    # ROC curve data
+    fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+    auc_score = roc_auc_score(y_test, y_pred_proba)
+
+    # Feature importance
+    feature_importance = pd.DataFrame({
+        'feature': X_test.columns,
+        'importance': np.abs(clf.coef_[0])
+    }).sort_values('importance', ascending=True).tail(15)
+
+    # Model comparison
+    models_data = {
+        'model': ['Baseline\n(Country)', 'Full\n(+Controls)', 'Regional\n(+Controls)'],
+        'pseudo_r2': [baseline_result.prsquared, full_result.prsquared, regional_result.prsquared]
+    }
+
+    print("   Building interactive visualizations...")
+
+    # Create 2x3 subplot grid
+    fig = make_subplots(
+        rows=2, cols=3,
+        subplot_titles=(
+            '📊 All Countries: Odds Ratios (Log Scale, ≥30 cases)',
+            '🥧 Country Significance After Controls (≥30 cases)',
+            '📈 Model Fit Comparison (Pseudo R²)',
+            '📉 ROC Curve - Predictive Performance',
+            '📊 Distribution of Odds Ratios (≥30 cases)',
+            '🎯 Top 15 Feature Importance'
+        ),
+        specs=[
+            [{'type': 'bar'}, {'type': 'pie'}, {'type': 'bar'}],
+            [{'type': 'scatter'}, {'type': 'histogram'}, {'type': 'bar'}]
+        ],
+        vertical_spacing=0.15,
+        horizontal_spacing=0.10
+    )
+
+    # === ROW 1, COL 1: All Countries Odds Ratios (LOG SCALE) ===
+    bar_colors = [colors['negative'] if or_val < 1 else colors['positive']
+                  for or_val in country_ors_sorted['OR']]
+
+    fig.add_trace(
+        go.Bar(
+            y=country_ors_sorted.index,
+            x=country_ors_sorted['OR'],
+            orientation='h',
+            marker_color=bar_colors,
+            marker_opacity=0.7,
+            text=[f'{or_val:.2f}' if or_val < 10 else f'{or_val:.1f}'
+                  for or_val in country_ors_sorted['OR']],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Odds Ratio: %{x:.2f}<br>p-value: %{customdata:.4f}<extra></extra>',
+            customdata=country_ors_sorted['p_value'],
+            name='Odds Ratio'
+        ),
+        row=1, col=1
+    )
+
+    # Add reference line at OR=1
+    fig.add_shape(
+        type='line',
+        x0=1, x1=1,
+        y0=-0.5, y1=len(country_ors_sorted)-0.5,
+        line=dict(color='black', width=2, dash='dash'),
+        row=1, col=1
+    )
+    fig.add_annotation(
+        x=1,
+        y=len(country_ors_sorted),
+        text='OR = 1 (No effect)',
+        showarrow=False,
+        yshift=10,
+        xshift=50,
+        font=dict(size=9),
+        row=1, col=1
+    )
+
+    # === ROW 1, COL 2: Significance Pie Chart ===
+    fig.add_trace(
+        go.Pie(
+            labels=[f'Significant<br>(p < 0.05)<br>n={sig_countries}',
+                    f'Not Significant<br>(p ≥ 0.05)<br>n={non_sig}'],
+            values=[sig_countries, non_sig],
+            marker_colors=[colors['significant'], colors['not_significant']],
+            textinfo='label+percent',
+            textfont=dict(size=11),
+            hovertemplate='<b>%{label}</b><br>Count: %{value}<br>Percent: %{percent}<extra></extra>',
+            name='Significance'
+        ),
+        row=1, col=2
+    )
+
+    # === ROW 1, COL 3: Model Fit Comparison ===
+    fig.add_trace(
+        go.Bar(
+            x=models_data['model'],
+            y=models_data['pseudo_r2'],
+            marker_color=[colors['baseline'], colors['full'], colors['regional']],
+            marker_opacity=0.7,
+            text=[f'{r2:.3f}' for r2 in models_data['pseudo_r2']],
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>Pseudo R²: %{y:.3f}<extra></extra>',
+            name='Pseudo R²'
+        ),
+        row=1, col=3
+    )
+
+    # === ROW 2, COL 1: ROC Curve ===
+    fig.add_trace(
+        go.Scatter(
+            x=fpr,
+            y=tpr,
+            mode='lines',
+            line=dict(color='darkorange', width=3),
+            hovertemplate='<b>ROC Curve</b><br>FPR: %{x:.3f}<br>TPR: %{y:.3f}<br>AUC: ' + f'{auc_score:.3f}<extra></extra>',
+            name=f'ROC (AUC={auc_score:.3f})'
+        ),
+        row=2, col=1
+    )
+
+    # Add random classifier line
+    fig.add_trace(
+        go.Scatter(
+            x=[0, 1],
+            y=[0, 1],
+            mode='lines',
+            line=dict(color='navy', width=2, dash='dash'),
+            hovertemplate='Random Classifier<extra></extra>',
+            name='Random',
+            showlegend=False
+        ),
+        row=2, col=1
+    )
+
+    # === ROW 2, COL 2: Odds Ratio Distribution ===
+    fig.add_trace(
+        go.Histogram(
+            x=country_ors_df['OR'],
+            nbinsx=15,
+            marker_color='purple',
+            marker_opacity=0.7,
+            marker_line_color='black',
+            marker_line_width=1,
+            hovertemplate='<b>Odds Ratio Range</b><br>Count: %{y}<extra></extra>',
+            name='OR Distribution'
+        ),
+        row=2, col=2
+    )
+
+    # Add reference line at OR=1
+    fig.add_shape(
+        type='line',
+        x0=1, x1=1,
+        y0=0, y1=1,
+        yref='paper',
+        line=dict(color='red', width=2, dash='dash'),
+        row=2, col=2
+    )
+
+    # === ROW 2, COL 3: Feature Importance ===
+    fig.add_trace(
+        go.Bar(
+            y=feature_importance['feature'],
+            x=feature_importance['importance'],
+            orientation='h',
+            marker_color='teal',
+            marker_opacity=0.7,
+            text=[f'{imp:.3f}' for imp in feature_importance['importance']],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Importance: %{x:.3f}<extra></extra>',
+            name='Importance'
+        ),
+        row=2, col=3
+    )
+
+    # Update axes
+    fig.update_xaxes(type='log', title_text="Odds Ratio (Log Scale)", row=1, col=1)
+    fig.update_xaxes(title_text="Model", row=1, col=3)
+    fig.update_xaxes(title_text="False Positive Rate", row=2, col=1)
+    fig.update_xaxes(title_text="Odds Ratio", row=2, col=2)
+    fig.update_xaxes(title_text="Absolute Coefficient", row=2, col=3)
+
+    fig.update_yaxes(title_text="Country", row=1, col=1)
+    fig.update_yaxes(title_text="Pseudo R²", row=1, col=3)
+    fig.update_yaxes(title_text="True Positive Rate", row=2, col=1)
+    fig.update_yaxes(title_text="Frequency", row=2, col=2)
+    fig.update_yaxes(title_text="Feature", row=2, col=3)
+
+    # Update layout
+    fig.update_layout(
+        title={
+            'text': '<b>ECHR Logistic Regression Analysis - Interactive Dashboard</b><br><sub>Country Effects After Controlling for Article, Year, Applicant Type (1968-2020) | Hover for details</sub>',
+            'x': 0.5,
+            'xanchor': 'center',
+            'font': {'size': 18}
+        },
+        height=1000,
+        showlegend=False,
+        hovermode='closest',
+        template='plotly_white',
+        font=dict(family='Arial, sans-serif', size=10)
+    )
+
+    # Save interactive HTML
+    output_file = 'logistic_regression_interactive.html'
+    fig.write_html(
+        output_file,
+        config={
+            'displayModeBar': True,
+            'displaylogo': False,
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+            'toImageButtonOptions': {
+                'format': 'png',
+                'filename': 'echr_logistic_regression_dashboard',
+                'height': 1000,
+                'width': 1800,
+                'scale': 2
+            }
+        }
+    )
+
+    file_size_mb = Path(output_file).stat().st_size / (1024 * 1024)
+
+    print(f"\n✓ Interactive dashboard created successfully!")
+    print(f"   📁 File: {output_file}")
+    print(f"   📦 Size: {file_size_mb:.1f} MB")
+    print(f"\n   🎯 Key Features:")
+    print(f"      • LOG SCALE for odds ratios - Moldova outlier handled!")
+    print(f"      • All {len(country_ors_df)} countries visible (not just top 10)")
+    print(f"      • Hover for exact values and p-values")
+    print(f"      • Zoom, pan, and export as PNG")
+    print(f"      • Works offline - no internet needed!")
+    print(f"\n   💡 To view: Open {output_file} in any web browser")
+    print("=" * 80)
+
+
 def generate_final_summary(baseline_result, full_result, country_ors_df):
     """Generate comprehensive final summary"""
     print("\n" + "=" * 80)
@@ -611,13 +893,18 @@ def main():
     # Visualizations
     create_visualizations(baseline_result, full_result, country_ors_df,
                          clf, X_test, y_test, y_pred_proba)
-    
+
+    # Interactive Dashboard
+    create_interactive_dashboard(baseline_result, full_result, regional_result,
+                                country_ors_df, clf, X_test, y_test, y_pred_proba)
+
     # Final summary
     generate_final_summary(baseline_result, full_result, country_ors_df)
-    
+
     print("\n✓ All analyses completed successfully!")
     print("\nGenerated files:")
-    print("  📊 logistic_regression_analysis.png")
+    print("  📊 logistic_regression_analysis.png (static)")
+    print("  🎯 logistic_regression_interactive.html (interactive - recommended!) 🎯")
 
 
 if __name__ == "__main__":

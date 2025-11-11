@@ -1,0 +1,30 @@
+# ECHR Case Analysis - Python Requirements
+# Research Question: Does the European Court of Human Rights treat countries differently?
+
+# Core data manipulation
+pandas==2.3.3
+numpy==2.3.4
+
+# Statistical analysis
+scipy==1.16.3
+statsmodels==0.14.5
+scikit-learn==1.7.2
+
+# Visualization
+matplotlib==3.10.7
+seaborn==0.13.2
+
+# Interactive Dashboard
+streamlit>=1.28.0
+plotly>=5.18.0
+
+# Machine Learning
+xgboost>=2.0.0
+
+# Installation instructions:
+# pip install -r requirements.txt
+#
+# Or with specific versions:
+# pip install pandas==2.3.3 numpy==2.3.4 scipy==1.16.3 statsmodels==0.14.5 scikit-learn==1.7.2 matplotlib==3.10.7 seaborn==0.13.2
+#
+# Note: Python 3.8+ recommended
