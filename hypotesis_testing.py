@@ -20,6 +20,12 @@ from statsmodels.stats.proportion import proportions_ztest
 import warnings
 warnings.filterwarnings('ignore')
 
+# Interactive visualization libraries
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import plotly.express as px
+from pathlib import Path
+
 # Set visualization style
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
@@ -94,6 +100,12 @@ def proportion_tests_top_countries(df, min_cases=30):
     """
     Test 2: Proportion tests for top countries
     Compare violation rates between country pairs
+
+    Args:
+        df: DataFrame with case data
+        min_cases: Minimum number of cases required for a country to be included (default: 30)
+                   This ensures statistical reliability - countries with too few cases are excluded
+                   (e.g., Liechtenstein with 2 cases, Iceland with 4 cases)
     """
     print("\n" + "=" * 80)
     print("TEST 2: PROPORTION TESTS (Country Pairs)")
@@ -211,19 +223,20 @@ def regional_comparison(df):
     print("TEST 3: REGIONAL COMPARISON")
     print("=" * 80)
     
-    # Define country groups
+    # Define country groups (matching logistic_regression.py for consistency)
     eastern_europe = [
         'Russian Federation', 'Ukraine', 'Poland', 'Romania', 'Hungary',
         'Bulgaria', 'Croatia', 'Slovenia', 'Slovakia', 'Czechia',
         'Lithuania', 'Latvia', 'Estonia', 'Moldova, Republic of',
         'Serbia', 'Bosnia and Herzegovina', 'North Macedonia', 'Albania',
-        'Belarus', 'Armenia', 'Azerbaijan', 'Georgia'
+        'Armenia', 'Azerbaijan', 'Georgia', 'Turkey', 'Montenegro'
     ]
-    
+
     western_europe = [
         'United Kingdom', 'Germany', 'France', 'Italy', 'Spain',
         'Netherlands', 'Belgium', 'Austria', 'Switzerland', 'Sweden',
-        'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Greece'
+        'Norway', 'Denmark', 'Finland', 'Ireland', 'Portugal', 'Greece',
+        'Cyprus', 'Malta', 'Luxembourg', 'Iceland', 'San Marino', 'Liechtenstein'
     ]
     
     # Classify countries
@@ -471,11 +484,11 @@ def create_visualizations(df, country_stats_df, eastern_rate, western_rate):
     country_rates = df.groupby('country_name')['has_violation'].mean() * 100
     
     ax4.hist(country_rates, bins=20, color='purple', alpha=0.7, edgecolor='black')
-    ax4.axvline(x=country_rates.mean(), color='red', linestyle='--', 
+    ax4.axvline(x=country_rates.mean(), color='red', linestyle='--',
                 label=f'Mean: {country_rates.mean():.1f}%', linewidth=2)
     ax4.set_xlabel('Violation Rate (%)')
     ax4.set_ylabel('Number of Countries')
-    ax4.set_title('Distribution of Violation Rates\nAcross Countries', fontweight='bold')
+    ax4.set_title('How Many Countries Have\nEach Violation Rate?', fontweight='bold')
     ax4.legend()
     
     # 5. Sample size vs violation rate scatter
@@ -533,6 +546,373 @@ def create_visualizations(df, country_stats_df, eastern_rate, western_rate):
     plt.savefig('hypothesis_test_visualizations.png', dpi=300, bbox_inches='tight')
     print(f"\n✓ Visualizations saved: hypothesis_test_visualizations.png")
     plt.close()
+
+
+def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rate):
+    """
+    Create comprehensive interactive Plotly HTML dashboard for Hypothesis Tests
+
+    Generates standalone HTML file with 6 interactive visualizations:
+    - Violation rates by country with 95% CI error bars (only countries with ≥30 cases)
+    - Eastern vs Western Europe comparison
+    - Temporal: Before vs After 2000
+    - Distribution of violation rates across countries
+    - Sample size vs violation rate scatter (log scale)
+    - Top 5 vs Bottom 5 countries comparison
+
+    Note: country_stats_df is already filtered to include only countries with ≥30 cases
+          for statistical reliability. This excludes small-sample countries like
+          Liechtenstein (2 cases), Iceland (4 cases), etc.
+
+    Output: hypothesis_test_interactive.html (standalone, no web server needed)
+    """
+    print("\n" + "=" * 80)
+    print("📊 CREATING INTERACTIVE PLOTLY DASHBOARD")
+    print("=" * 80)
+
+    # Color scheme
+    colors = {
+        'primary': '#1f77b4',
+        'eastern': '#ff6b6b',  # coral
+        'western': '#4ecdc4',  # lightblue
+        'before': '#90ee90',   # lightgreen
+        'after': '#fa8072',    # salmon
+        'low': '#90ee90',      # lightgreen
+        'high': '#fa8072'      # salmon
+    }
+
+    print("   Preparing data...")
+
+    # 1. Top 15 countries with confidence intervals (highest violation rates)
+    top_15 = country_stats_df.tail(15).copy()
+    top_15['ci'] = 1.96 * np.sqrt(
+        (top_15['violation_rate'] * (1 - top_15['violation_rate'])) / top_15['n_total']
+    )
+
+    # 2. Regional data
+    eastern_n = len(df[df['region'] == 'Eastern Europe'])
+    western_n = len(df[df['region'] == 'Western Europe'])
+
+    # 3. Temporal data
+    before_2000 = df[df['year'] < 2000]
+    after_2000 = df[df['year'] >= 2000]
+    before_rate = before_2000['has_violation'].mean()
+    after_rate = after_2000['has_violation'].mean()
+
+    # 4. Country distribution
+    country_rates = df.groupby('country_name')['has_violation'].mean()
+
+    # 5. Sample size vs violation rate
+    country_summary = df.groupby('country_name').agg({
+        'has_violation': ['mean', 'count']
+    }).reset_index()
+    country_summary.columns = ['country', 'violation_rate', 'n_cases']
+    country_regions = df.groupby('country_name')['region'].first()
+    country_summary['region'] = country_summary['country'].map(country_regions)
+
+    # 6. Top vs Bottom 5
+    top_5_countries = country_stats_df.tail(5)
+    bottom_5_countries = country_stats_df.head(5)
+
+    print("   Building interactive visualizations...")
+
+    # Create 2x3 subplot grid
+    fig = make_subplots(
+        rows=2, cols=3,
+        subplot_titles=(
+            '📊 Violation Rates by Country (with 95% CI, ≥30 cases)',
+            '🗺️ Regional Comparison: Eastern vs Western',
+            '📅 Temporal: Before vs After 2000',
+            '📈 How Many Countries Have Each Violation Rate?',
+            '🔍 Sample Size vs Violation Rate (All Countries)',
+            '⚖️ Top 5 vs Bottom 5 Countries (≥30 cases)'
+        ),
+        specs=[
+            [{'type': 'bar'}, {'type': 'bar'}, {'type': 'bar'}],
+            [{'type': 'histogram'}, {'type': 'scatter'}, {'type': 'bar'}]
+        ],
+        vertical_spacing=0.15,
+        horizontal_spacing=0.10
+    )
+
+    # === ROW 1, COL 1: Violation Rates with Error Bars ===
+    fig.add_trace(
+        go.Bar(
+            y=top_15['country'],
+            x=top_15['violation_rate'],
+            orientation='h',
+            error_x=dict(
+                type='data',
+                array=top_15['ci'],
+                visible=True,
+                color='rgba(0,0,0,0.3)',
+                thickness=1.5
+            ),
+            marker_color=colors['primary'],
+            marker_opacity=0.7,
+            text=[f'{rate:.1%}' for rate in top_15['violation_rate']],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Violation Rate: %{x:.1%}<br>95% CI: ±%{error_x.array:.3f}<extra></extra>',
+            name='Violation Rate',
+            showlegend=False
+        ),
+        row=1, col=1
+    )
+
+    # Add overall average line
+    overall_avg = df['has_violation'].mean()
+    fig.add_shape(
+        type='line',
+        x0=overall_avg, x1=overall_avg,
+        y0=-0.5, y1=len(top_15)-0.5,
+        line=dict(color='red', width=2, dash='dash'),
+        row=1, col=1
+    )
+
+    # === ROW 1, COL 2: Eastern vs Western ===
+    fig.add_trace(
+        go.Bar(
+            x=['Eastern<br>Europe', 'Western<br>Europe'],
+            y=[eastern_rate * 100, western_rate * 100],
+            marker_color=[colors['eastern'], colors['western']],
+            marker_opacity=0.7,
+            marker_line_color='black',
+            marker_line_width=1,
+            text=[f'{eastern_rate*100:.1f}%<br>n={eastern_n}',
+                  f'{western_rate*100:.1f}%<br>n={western_n}'],
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>Violation Rate: %{y:.1f}%<extra></extra>',
+            name='Regional',
+            showlegend=False
+        ),
+        row=1, col=2
+    )
+
+    # === ROW 1, COL 3: Temporal Comparison ===
+    fig.add_trace(
+        go.Bar(
+            x=['Before<br>2000', 'After<br>2000'],
+            y=[before_rate * 100, after_rate * 100],
+            marker_color=[colors['before'], colors['after']],
+            marker_opacity=0.7,
+            marker_line_color='black',
+            marker_line_width=1,
+            text=[f'{before_rate*100:.1f}%', f'{after_rate*100:.1f}%'],
+            textposition='outside',
+            hovertemplate='<b>%{x}</b><br>Violation Rate: %{y:.1f}%<extra></extra>',
+            name='Temporal',
+            showlegend=False
+        ),
+        row=1, col=3
+    )
+
+    # Add arrow annotation
+    change = (after_rate - before_rate) * 100
+    fig.add_annotation(
+        x=0.5, y=(before_rate * 100 + after_rate * 100) / 2,
+        text=f'+{change:.1f} pp',
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=2,
+        arrowcolor='red',
+        ax=0,
+        ay=-40,
+        font=dict(size=12, color='red'),
+        row=1, col=3
+    )
+
+    # === ROW 2, COL 1: Distribution Histogram ===
+    fig.add_trace(
+        go.Histogram(
+            x=country_rates * 100,
+            nbinsx=20,
+            marker_color='purple',
+            marker_opacity=0.7,
+            marker_line_color='black',
+            marker_line_width=1,
+            hovertemplate='<b>Violation Rate: %{x:.1f}%</b><br>Number of Countries: %{y}<extra></extra>',
+            name='Distribution',
+            showlegend=False
+        ),
+        row=2, col=1
+    )
+
+    # Add mean line with annotation
+    mean_rate = country_rates.mean() * 100
+    fig.add_shape(
+        type='line',
+        x0=mean_rate, x1=mean_rate,
+        y0=0, y1=1,
+        yref='paper',
+        line=dict(color='red', width=2, dash='dash'),
+        row=2, col=1
+    )
+
+    # Add annotation for mean
+    fig.add_annotation(
+        x=mean_rate,
+        y=0.95,
+        yref='paper',
+        text=f'Mean: {mean_rate:.1f}%',
+        showarrow=True,
+        arrowhead=2,
+        arrowsize=1,
+        arrowwidth=2,
+        arrowcolor='red',
+        ax=-50,
+        ay=-30,
+        font=dict(size=11, color='red'),
+        bgcolor='white',
+        bordercolor='red',
+        borderwidth=1,
+        row=2, col=1
+    )
+
+    # === ROW 2, COL 2: Sample Size vs Violation Rate Scatter ===
+    # Eastern Europe
+    eastern_data = country_summary[country_summary['region'] == 'Eastern Europe']
+    fig.add_trace(
+        go.Scatter(
+            x=eastern_data['n_cases'],
+            y=eastern_data['violation_rate'] * 100,
+            mode='markers',
+            marker=dict(size=10, color=colors['eastern'], opacity=0.6,
+                       line=dict(color='black', width=1)),
+            text=eastern_data['country'],
+            hovertemplate='<b>%{text}</b><br>Cases: %{x}<br>Violation Rate: %{y:.1f}%<extra></extra>',
+            name='Eastern Europe'
+        ),
+        row=2, col=2
+    )
+
+    # Western Europe
+    western_data = country_summary[country_summary['region'] == 'Western Europe']
+    fig.add_trace(
+        go.Scatter(
+            x=western_data['n_cases'],
+            y=western_data['violation_rate'] * 100,
+            mode='markers',
+            marker=dict(size=10, color=colors['western'], opacity=0.6,
+                       line=dict(color='black', width=1)),
+            text=western_data['country'],
+            hovertemplate='<b>%{text}</b><br>Cases: %{x}<br>Violation Rate: %{y:.1f}%<extra></extra>',
+            name='Western Europe'
+        ),
+        row=2, col=2
+    )
+
+    # Add overall average line
+    fig.add_shape(
+        type='line',
+        x0=country_summary['n_cases'].min(),
+        x1=country_summary['n_cases'].max(),
+        y0=overall_avg * 100, y1=overall_avg * 100,
+        line=dict(color='red', width=2, dash='dash'),
+        row=2, col=2
+    )
+
+    # === ROW 2, COL 3: Top 5 vs Bottom 5 ===
+    # Combine bottom 5 and top 5 into single view with all 10 countries
+    all_countries = list(bottom_5_countries['country'].values) + list(top_5_countries['country'].values)
+    all_rates = list(bottom_5_countries['violation_rate'].values * 100) + list(top_5_countries['violation_rate'].values * 100)
+    bar_colors = [colors['low']] * 5 + [colors['high']] * 5
+
+    fig.add_trace(
+        go.Bar(
+            y=all_countries,
+            x=all_rates,
+            orientation='h',
+            marker_color=bar_colors,
+            marker_opacity=0.7,
+            marker_line_color='black',
+            marker_line_width=1,
+            text=[f'{rate:.1f}%' for rate in all_rates],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Violation Rate: %{x:.1f}%<extra></extra>',
+            name='Countries',
+            showlegend=False
+        ),
+        row=2, col=3
+    )
+
+    # Add separator line between bottom 5 and top 5
+    fig.add_shape(
+        type='line',
+        x0=0, x1=100,
+        y0=4.5, y1=4.5,
+        line=dict(color='gray', width=2, dash='dash'),
+        row=2, col=3
+    )
+
+    # Update axes
+    fig.update_xaxes(title_text="Violation Rate", tickformat='.0%', row=1, col=1)
+    fig.update_xaxes(title_text="", row=1, col=2)
+    fig.update_xaxes(title_text="", row=1, col=3)
+    fig.update_xaxes(title_text="Violation Rate (%)", row=2, col=1)
+    fig.update_xaxes(title_text="Number of Cases (log scale)", type='log', row=2, col=2)
+    fig.update_xaxes(title_text="Violation Rate (%)", row=2, col=3)
+
+    fig.update_yaxes(title_text="Country", row=1, col=1)
+    fig.update_yaxes(title_text="Violation Rate (%)", row=1, col=2)
+    fig.update_yaxes(title_text="Violation Rate (%)", row=1, col=3)
+    fig.update_yaxes(title_text="Number of Countries", row=2, col=1)
+    fig.update_yaxes(title_text="Violation Rate (%)", row=2, col=2)
+    fig.update_yaxes(title_text="Rank", row=2, col=3)
+
+    # Update layout
+    fig.update_layout(
+        title={
+            'text': '<b>ECHR Hypothesis Testing - Interactive Dashboard</b><br><sub>Chi-square tests, Proportion tests, Regional & Temporal comparisons (1968-2020) | Hover for details</sub>',
+            'x': 0.5,
+            'xanchor': 'center',
+            'font': {'size': 18}
+        },
+        height=1000,
+        hovermode='closest',
+        template='plotly_white',
+        font=dict(family='Arial, sans-serif', size=10),
+        legend=dict(
+            orientation='h',
+            yanchor='bottom',
+            y=-0.15,
+            xanchor='center',
+            x=0.5
+        )
+    )
+
+    # Save interactive HTML
+    output_file = 'hypothesis_test_interactive.html'
+    fig.write_html(
+        output_file,
+        config={
+            'displayModeBar': True,
+            'displaylogo': False,
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+            'toImageButtonOptions': {
+                'format': 'png',
+                'filename': 'echr_hypothesis_testing_dashboard',
+                'height': 1000,
+                'width': 1800,
+                'scale': 2
+            }
+        }
+    )
+
+    file_size_mb = Path(output_file).stat().st_size / (1024 * 1024)
+
+    print(f"\n✓ Interactive dashboard created successfully!")
+    print(f"   📁 File: {output_file}")
+    print(f"   📦 Size: {file_size_mb:.1f} MB")
+    print(f"\n   🎯 Key Features:")
+    print(f"      • 95% Confidence intervals on country violation rates")
+    print(f"      • Interactive regional & temporal comparisons")
+    print(f"      • Log scale scatter plot for sample size analysis")
+    print(f"      • Hover for exact values and country names")
+    print(f"      • Zoom, pan, and export as PNG")
+    print(f"      • Works offline - no internet needed!")
+    print(f"\n   💡 To view: Open {output_file} in any web browser")
+    print("=" * 80)
 
 
 def generate_summary(chi2_result, prop_results, regional_results, temporal_results):
@@ -625,7 +1005,10 @@ def main():
     
     # Create visualizations
     create_visualizations(df, country_stats_df, eastern_rate, western_rate)
-    
+
+    # Create interactive dashboard
+    create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rate)
+
     # Generate summary
     generate_summary(
         chi2_result,
@@ -633,10 +1016,11 @@ def main():
         (eastern_rate, western_rate, regional_p, cohens_h),
         (before_rate, after_rate, temporal_p)
     )
-    
+
     print("\n✓ All tests completed successfully!")
     print("\nGenerated files:")
-    print("  📊 hypothesis_test_visualizations.png")
+    print("  📊 hypothesis_test_visualizations.png (static)")
+    print("  🎯 hypothesis_test_interactive.html (interactive - recommended!) 🎯")
 
 
 if __name__ == "__main__":

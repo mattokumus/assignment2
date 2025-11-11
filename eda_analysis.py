@@ -12,6 +12,11 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
+# Interactive visualization libraries
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import plotly.express as px
+
 # Set style
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
@@ -415,6 +420,346 @@ def generate_summary_report(df):
     """)
 
 
+def create_interactive_dashboard(df):
+    """
+    Create comprehensive interactive Plotly HTML dashboard for EDA
+
+    Generates standalone HTML file with 9 interactive visualizations:
+    - Country analysis (case counts, violation rates)
+    - Temporal trends (cases over time, violation rates)
+    - Distributions (applicant types, violation counts)
+    - Heatmap (Countries × Decades)
+    - Correlation matrix
+
+    Output: eda_interactive.html (standalone, no web server needed)
+    """
+    print("\n" + "=" * 80)
+    print("📊 CREATING INTERACTIVE PLOTLY DASHBOARD")
+    print("=" * 80)
+
+    # Color scheme for consistency
+    colors = {
+        'primary': '#1f77b4',      # Blue
+        'secondary': '#ff7f0e',    # Orange
+        'success': '#2ca02c',      # Green
+        'danger': '#d62728',       # Red
+        'warning': '#ff7f0e',      # Orange
+        'info': '#17becf',         # Cyan
+        'purple': '#9467bd',       # Purple
+        'pink': '#e377c2',         # Pink
+        'brown': '#8c564b',        # Brown
+        'olive': '#bcbd22'         # Olive
+    }
+
+    # Calculate data for visualizations
+    print("   Preparing data...")
+
+    # 1. Top 15 Countries by Case Count
+    top_15_countries = df['country_name'].value_counts().head(15).sort_values()
+
+    # 2. Violation Rate by Top 15 Countries
+    top_countries_list = df['country_name'].value_counts().head(15).index
+    violation_rates = df[df['country_name'].isin(top_countries_list)].groupby('country_name')['has_violation'].mean().sort_values()
+    overall_avg = df['has_violation'].mean()
+
+    # 3. Cases Over Time
+    yearly_cases = df.groupby('year').size()
+
+    # 4. Violation Rate Over Time
+    yearly_violation_rate = df.groupby('year')['has_violation'].mean()
+
+    # 5. Applicant Types
+    applicant_counts = df['applicant_type'].value_counts()
+    applicant_pct = (applicant_counts / applicant_counts.sum() * 100).round(1)
+
+    # 6. Violation Count Distribution
+    violation_count_dist = df['violation_count'].value_counts().sort_index()
+
+    # 7. Heatmap: Countries × Decades
+    top_20_countries = df['country_name'].value_counts().head(20).index
+    df_top = df[df['country_name'].isin(top_20_countries)].copy()
+    df_top['decade'] = (df_top['year'] // 10) * 10
+    heatmap_data = df_top.groupby(['country_name', 'decade'])['has_violation'].mean().unstack(fill_value=0)
+
+    # 8. Correlation Matrix
+    df_corr = df[['year', 'violation_count', 'no_violation_count']].copy()
+    df_corr['has_violation_num'] = df['has_violation'].astype(int)
+    corr_matrix = df_corr.corr()
+
+    # Create 3x3 subplot grid
+    print("   Building interactive visualizations...")
+
+    fig = make_subplots(
+        rows=3, cols=3,
+        subplot_titles=(
+            '📍 Top 15 Countries by Case Count',
+            '⚖️ Violation Rate: Top 15 Countries',
+            '📈 Cases Over Time (1968-2020)',
+            '📉 Violation Rate Over Time',
+            '👥 Distribution of Applicant Types',
+            '📊 Distribution of Violation Counts',
+            '🗺️ Violation Rate Heatmap: Countries × Decades',
+            '',  # Heatmap spans 2 columns
+            '🔗 Correlation Matrix'
+        ),
+        specs=[
+            [{'type': 'bar'}, {'type': 'bar'}, {'type': 'scatter'}],
+            [{'type': 'scatter'}, {'type': 'bar'}, {'type': 'bar'}],
+            [{'type': 'heatmap', 'colspan': 2}, None, {'type': 'heatmap'}]
+        ],
+        column_widths=[0.26, 0.26, 0.30],  # Adjust column widths for better spacing
+        vertical_spacing=0.12,
+        horizontal_spacing=0.10,
+        row_heights=[0.30, 0.30, 0.40]
+    )
+
+    # === ROW 1, COL 1: Top 15 Countries by Case Count ===
+    fig.add_trace(
+        go.Bar(
+            y=top_15_countries.index,
+            x=top_15_countries.values,
+            orientation='h',
+            marker_color=colors['primary'],
+            text=top_15_countries.values,
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Cases: %{x}<extra></extra>',
+            name='Case Count'
+        ),
+        row=1, col=1
+    )
+
+    # === ROW 1, COL 2: Violation Rate by Top 15 Countries ===
+    fig.add_trace(
+        go.Bar(
+            y=violation_rates.index,
+            x=violation_rates.values,
+            orientation='h',
+            marker_color=colors['danger'],
+            text=[f'{v:.1%}' for v in violation_rates.values],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Violation Rate: %{x:.1%}<extra></extra>',
+            name='Violation Rate'
+        ),
+        row=1, col=2
+    )
+
+    # Add overall average line
+    fig.add_shape(
+        type='line',
+        x0=overall_avg, x1=overall_avg,
+        y0=-0.5, y1=len(violation_rates)-0.5,
+        line=dict(color=colors['primary'], width=2, dash='dash'),
+        row=1, col=2
+    )
+    fig.add_annotation(
+        x=overall_avg,
+        y=len(violation_rates),
+        text=f'Overall Avg: {overall_avg:.1%}',
+        showarrow=False,
+        yshift=10,
+        font=dict(size=10, color=colors['primary']),
+        row=1, col=2
+    )
+
+    # === ROW 1, COL 3: Cases Over Time ===
+    fig.add_trace(
+        go.Scatter(
+            x=yearly_cases.index,
+            y=yearly_cases.values,
+            mode='lines+markers',
+            line=dict(color=colors['success'], width=3),
+            marker=dict(size=6),
+            hovertemplate='<b>Year %{x}</b><br>Cases: %{y}<extra></extra>',
+            name='Cases/Year'
+        ),
+        row=1, col=3
+    )
+
+    # === ROW 2, COL 1: Violation Rate Over Time ===
+    fig.add_trace(
+        go.Scatter(
+            x=yearly_violation_rate.index,
+            y=yearly_violation_rate.values,
+            mode='lines+markers',
+            line=dict(color=colors['danger'], width=3),
+            marker=dict(size=6),
+            hovertemplate='<b>Year %{x}</b><br>Violation Rate: %{y:.1%}<extra></extra>',
+            name='Violation Rate/Year'
+        ),
+        row=2, col=1
+    )
+
+    # Add overall average line
+    fig.add_shape(
+        type='line',
+        x0=yearly_violation_rate.index.min(),
+        x1=yearly_violation_rate.index.max(),
+        y0=overall_avg, y1=overall_avg,
+        line=dict(color=colors['primary'], width=2, dash='dash'),
+        row=2, col=1
+    )
+    fig.add_annotation(
+        x=yearly_violation_rate.index.max(),
+        y=overall_avg,
+        text=f'Overall: {overall_avg:.1%}',
+        showarrow=False,
+        xshift=50,
+        font=dict(size=10, color=colors['primary']),
+        row=2, col=1
+    )
+
+    # === ROW 2, COL 2: Distribution of Applicant Types ===
+    fig.add_trace(
+        go.Bar(
+            y=applicant_counts.index,
+            x=applicant_counts.values,
+            orientation='h',
+            marker_color=colors['info'],
+            text=[f'{count} ({pct}%)' for count, pct in zip(applicant_counts.values, applicant_pct.values)],
+            textposition='outside',
+            hovertemplate='<b>%{y}</b><br>Cases: %{x} (%{text})<extra></extra>',
+            name='Applicant Type'
+        ),
+        row=2, col=2
+    )
+
+    # === ROW 2, COL 3: Distribution of Violation Counts ===
+    fig.add_trace(
+        go.Bar(
+            x=violation_count_dist.index,
+            y=violation_count_dist.values,
+            marker_color=colors['purple'],
+            text=violation_count_dist.values,
+            textposition='outside',
+            hovertemplate='<b>Violations: %{x}</b><br>Frequency: %{y}<extra></extra>',
+            name='Violation Count'
+        ),
+        row=2, col=3
+    )
+
+    # === ROW 3, COL 1-2: Heatmap (Countries × Decades) ===
+    fig.add_trace(
+        go.Heatmap(
+            z=heatmap_data.values,
+            x=[f"{int(d)}s" for d in heatmap_data.columns],
+            y=heatmap_data.index,
+            colorscale='RdYlGn_r',
+            zmid=0.5,
+            zmin=0,
+            zmax=1,
+            text=[[f'{val:.0%}' for val in row] for row in heatmap_data.values],
+            texttemplate='%{text}',
+            textfont=dict(size=9),
+            hovertemplate='<b>%{y}</b><br>Decade: %{x}<br>Violation Rate: %{z:.1%}<extra></extra>',
+            colorbar=dict(
+                title=dict(text='Violation<br>Rate', side='right'),
+                tickformat='.0%',
+                x=0.63,
+                xanchor='left',
+                y=0.15,
+                yanchor='middle',
+                len=0.35,
+                thickness=12
+            ),
+            name='Heatmap'
+        ),
+        row=3, col=1
+    )
+
+    # === ROW 3, COL 3: Correlation Matrix ===
+    fig.add_trace(
+        go.Heatmap(
+            z=corr_matrix.values,
+            x=['Year', 'Violations', 'No Violations', 'Has Violation'],
+            y=['Year', 'Violations', 'No Violations', 'Has Violation'],
+            colorscale='RdBu_r',
+            zmid=0,
+            zmin=-1,
+            zmax=1,
+            text=[[f'{val:.3f}' for val in row] for row in corr_matrix.values],
+            texttemplate='%{text}',
+            textfont=dict(size=10),
+            hovertemplate='<b>%{y}</b> vs <b>%{x}</b><br>Correlation: %{z:.3f}<extra></extra>',
+            colorbar=dict(
+                title=dict(text='Correlation', side='right'),
+                tickformat='.2f',
+                x=1.05,
+                xanchor='left',
+                y=0.15,
+                yanchor='middle',
+                len=0.35,
+                thickness=12
+            ),
+            name='Correlation'
+        ),
+        row=3, col=3
+    )
+
+    # Update axes
+    fig.update_xaxes(title_text="Number of Cases", row=1, col=1)
+    fig.update_xaxes(title_text="Violation Rate", tickformat='.0%', row=1, col=2)
+    fig.update_xaxes(title_text="Year", row=1, col=3)
+    fig.update_xaxes(title_text="Year", row=2, col=1)
+    fig.update_xaxes(title_text="Number of Cases", row=2, col=2)
+    fig.update_xaxes(title_text="Violations per Case", row=2, col=3)
+    fig.update_xaxes(title_text="Decade", row=3, col=1)
+
+    fig.update_yaxes(title_text="Country", row=1, col=1)
+    fig.update_yaxes(title_text="Country", row=1, col=2)
+    fig.update_yaxes(title_text="Number of Cases", row=1, col=3)
+    fig.update_yaxes(title_text="Violation Rate", tickformat='.0%', row=2, col=1)
+    fig.update_yaxes(title_text="Applicant Type", row=2, col=2)
+    fig.update_yaxes(title_text="Frequency", row=2, col=3)
+    fig.update_yaxes(title_text="Country", row=3, col=1)
+
+    # Update layout
+    fig.update_layout(
+        title={
+            'text': '<b>ECHR Case Analysis - Interactive EDA Dashboard</b><br><sub>Exploratory Data Analysis (1968-2020) | Hover for details, click legend to toggle, drag to zoom</sub>',
+            'x': 0.5,
+            'xanchor': 'center',
+            'font': {'size': 20}
+        },
+        height=1400,
+        showlegend=False,
+        hovermode='closest',
+        template='plotly_white',
+        font=dict(family='Arial, sans-serif', size=11)
+    )
+
+    # Save interactive HTML
+    output_file = 'eda_interactive.html'
+    fig.write_html(
+        output_file,
+        config={
+            'displayModeBar': True,
+            'displaylogo': False,
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+            'toImageButtonOptions': {
+                'format': 'png',
+                'filename': 'echr_eda_dashboard',
+                'height': 1400,
+                'width': 1800,
+                'scale': 2
+            }
+        }
+    )
+
+    file_size_mb = Path(output_file).stat().st_size / (1024 * 1024)
+
+    print(f"\n✓ Interactive dashboard created successfully!")
+    print(f"   📁 File: {output_file}")
+    print(f"   📦 Size: {file_size_mb:.1f} MB")
+    print(f"\n   🎯 Features:")
+    print(f"      • Hover over any element for detailed information")
+    print(f"      • Click and drag to zoom into specific regions")
+    print(f"      • Double-click to reset zoom")
+    print(f"      • Use camera icon (top-right) to export as PNG")
+    print(f"      • Works offline - no internet needed!")
+    print(f"\n   💡 To view: Open {output_file} in any web browser")
+    print("=" * 80)
+
+
 def main():
     """Main EDA function"""
     
@@ -430,16 +775,18 @@ def main():
     article_analysis(df)
     correlation_analysis(df)
     create_visualizations(df)
+    create_interactive_dashboard(df)  # NEW: Interactive Plotly dashboard
     key_insights(df)
     generate_summary_report(df)
-    
+
     print("\n" + "=" * 80)
     print("✓ EDA COMPLETED SUCCESSFULLY!")
     print("=" * 80)
     print("\nGenerated files:")
-    print("  📊 eda_visualizations.png - Main visualizations")
-    print("  📊 eda_heatmap.png - Country × Decade heatmap")
-    print("  📊 eda_correlation.png - Correlation matrix")
+    print("  📊 eda_visualizations.png - Main visualizations (static)")
+    print("  📊 eda_heatmap.png - Country × Decade heatmap (static)")
+    print("  📊 eda_correlation.png - Correlation matrix (static)")
+    print("  🎯 eda_interactive.html - Interactive dashboard (recommended!) 🎯")
     print("\n")
 
 

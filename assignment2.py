@@ -36,9 +36,9 @@ def extract_applicant_type(docname, parties):
     """
     if not docname:
         return "Unknown"
-    
+
     docname_lower = docname.lower()
-    
+
     # Check for organizations/parties
     if "party" in docname_lower or "parties" in docname_lower:
         return "Political Party"
@@ -50,6 +50,46 @@ def extract_applicant_type(docname, parties):
         return "Multiple Applicants"
     else:
         return "Individual"
+
+
+def extract_judge_info(decision_body):
+    """
+    Extract judge information from decision_body array
+    Returns: dict with judge names, president, and count
+
+    decision_body format:
+    [
+        {"name": "Helena Jäderblom", "role": "president"},
+        {"name": "Branko Lubarda", "role": "judges"},
+        {"name": "Helen Keller", "role": "judges"}
+    ]
+    """
+    if not decision_body or not isinstance(decision_body, list):
+        return {
+            'judges_all': '',
+            'judge_president': '',
+            'judge_count': 0,
+            'judge_names_list': ''
+        }
+
+    president = ''
+    all_judges = []
+
+    for member in decision_body:
+        name = member.get('name', '')
+        role = member.get('role', '').lower()
+
+        if name:
+            all_judges.append(name)
+
+            if 'president' in role:
+                president = name
+
+    return {
+        'judge_president': president,
+        'judge_count': len(all_judges),
+        'judge_names_list': '|'.join(all_judges)  # Judge names separated by pipe
+    }
 
 
 def extract_violations(conclusion_list):
@@ -103,31 +143,35 @@ def extract_violations(conclusion_list):
 
 def extract_case_data(case):
     """Extract relevant data from a single case"""
-    
+
     # Country
     country_name = case.get('country', {}).get('name', '')
     country_code = case.get('country', {}).get('alpha2', '')
-    
+
     # Article(s)
     articles = case.get('article', [])
-    
+
     # Year
     judgement_date = case.get('judgementdate', '')
     year = parse_date_to_year(judgement_date)
-    
+
     # Applicant Type
     docname = case.get('docname', '')
     parties = case.get('parties', [])
     applicant_type = extract_applicant_type(docname, parties)
-    
+
     # Outcome (Violation) - FIXED VERSION
     conclusion = case.get('conclusion', [])
     violation_info = extract_violations(conclusion)
-    
+
     # If no substantive decision, return None
     if violation_info is None:
         return None
-    
+
+    # Judge Information - NEW
+    decision_body = case.get('decision_body', [])
+    judge_info = extract_judge_info(decision_body)
+
     return {
         'itemid': case.get('itemid', ''),
         'appno': case.get('appno', ''),
@@ -143,7 +187,11 @@ def extract_case_data(case):
         'no_violation_count': violation_info['no_violation_count'],
         'violated_articles': ', '.join(violation_info['violated_articles']),
         'no_violation_articles': ', '.join(violation_info['no_violation_articles']),
-        'has_mixed_decision': violation_info['has_procedural']  # Has both substantive + procedural
+        'has_mixed_decision': violation_info['has_procedural'],  # Has both substantive + procedural
+        # Judge information
+        'judge_president': judge_info['judge_president'],
+        'judge_count': judge_info['judge_count'],
+        'judge_names_list': judge_info['judge_names_list']
     }
 
 
@@ -220,7 +268,16 @@ def process_json_file(input_file, output_file='extracted_data.csv'):
     print("APPLICANT TYPES (SUBSTANTIVE CASES)")
     print(f"{'='*80}")
     print(df['applicant_type'].value_counts())
-    
+
+    print(f"\n{'='*80}")
+    print("JUDGE INFORMATION")
+    print(f"{'='*80}")
+    print(f"  • Cases with judge information: {df['judge_count'].gt(0).sum()} ({df['judge_count'].gt(0).sum()/len(df)*100:.1f}%)")
+    print(f"  • Unique judges: {len(set([j for judges in df['judge_names_list'].dropna() for j in judges.split('|') if j]))}")
+    print(f"  • Average judges per case: {df['judge_count'].mean():.1f}")
+    print(f"  • Most common presidents:")
+    print(df['judge_president'][df['judge_president'] != ''].value_counts().head(5))
+
     print(f"\n{'='*80}")
     print("⚠️  IMPORTANT NOTE:")
     print(f"{'='*80}")
