@@ -12,7 +12,7 @@
 
 1. **Data Documentation** (jsondocumenting.py): Systematic documentation of JSON structure, generating schema specifications and field mappings to understand all available case properties (country, articles, judges, conclusions, dates).
 
-2. **Data Extraction & Preprocessing** (assignment2.py): Converts JSON to structured CSV format, extracting relevant variables (country, articles, year, applicant type, judicial panel). Critically filters to substantive decisions only (violation/no-violation), excluding procedural outcomes (inadmissible, struck out) to avoid confounding merit-based judgments with jurisdictional decisions.
+2. **Data Extraction & Preprocessing** (data_extraction.py): Converts JSON to structured CSV format, extracting relevant variables (country, articles, year, applicant type, judicial panel). Critically filters to substantive decisions only (violation/no-violation), excluding procedural outcomes (inadmissible, struck out) to avoid confounding merit-based judgments with jurisdictional decisions.
 
 3. **Exploratory Data Analysis** (eda_analysis.py): Identifies cross-country variation in violation rates, temporal patterns, and article-specific trends through descriptive statistics and visualizations.
 
