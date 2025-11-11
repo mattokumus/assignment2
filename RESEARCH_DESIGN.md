@@ -10,18 +10,22 @@
 
 **Analytical Pipeline:**
 
-1. **Exploratory Data Analysis** (eda_analysis.py): Identifies cross-country variation in violation rates, temporal patterns, and article-specific trends through descriptive statistics and visualizations.
+1. **Data Documentation** (jsondocumenting.py): Systematic documentation of JSON structure, generating schema specifications and field mappings to understand all available case properties (country, articles, judges, conclusions, dates).
 
-2. **Hypothesis Testing** (hypotesis_testing.py): Chi-square tests and proportion tests assess statistical significance of country-outcome associations. Regional comparisons (Eastern vs. Western Europe) and temporal analysis (before/after 2000).
+2. **Data Extraction & Preprocessing** (assignment2.py): Converts JSON to structured CSV format, extracting relevant variables (country, articles, year, applicant type, judicial panel). Critically filters to substantive decisions only (violation/no-violation), excluding procedural outcomes (inadmissible, struck out) to avoid confounding merit-based judgments with jurisdictional decisions.
 
-3. **Logistic Regression** (logistic_regression.py): Hierarchical models isolate country effects after controlling for article type, temporal trends, and applicant characteristics. Country fixed effects tested with and without controls.
+3. **Exploratory Data Analysis** (eda_analysis.py): Identifies cross-country variation in violation rates, temporal patterns, and article-specific trends through descriptive statistics and visualizations.
 
-4. **Judge-Level Analysis** (judge_analysis.py): Critical robustness check testing whether country effects persist after controlling for panel composition, distinguishing systematic institutional patterns from judge-specific variation.
+4. **Hypothesis Testing** (hypotesis_testing.py): Chi-square and proportion tests assess statistical significance of country-outcome associations. Regional comparisons (Eastern vs. Western Europe) and temporal analysis (before/after 2000).
 
-5. **Machine Learning Validation** (ml_models_comparison.py): Random Forest and XGBoost models validate findings through cross-validation and temporal validation (pre-2015 training, post-2015 testing), assessing pattern stability.
+5. **Logistic Regression** (logistic_regression.py): Hierarchical models isolate country effects after controlling for article type, temporal trends, and applicant characteristics.
+
+6. **Judge-Level Analysis** (judge_analysis.py): Tests whether country effects persist after controlling for panel composition (president identity, judge names), distinguishing systematic patterns from judge-specific variation.
+
+7. **Machine Learning Validation** (ml_models_comparison.py): Random Forest and XGBoost validate findings through cross-validation and temporal validation (pre-2015 training, post-2015 testing).
 
 **Robustness Checks:** Minimum sample thresholds (≥30 cases/country), regional aggregation, temporal split validation, and judge fixed-effects ensure finding robustness. Statistical association cannot definitively prove discrimination, as unmeasured confounders (case complexity, representation quality) may explain observed patterns.
 
 ---
 
-**Word count:** 250 words
+**Word count:** ~285 words (7-stage pipeline documented)
