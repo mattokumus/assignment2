@@ -1,6 +1,8 @@
 # Does the European Court of Human Rights Treat Countries Differently?
 
-A comprehensive statistical analysis of 1,904 ECtHR cases (2000-2024) examining systematic country differences in violation findings.
+A comprehensive statistical analysis of 2,000 ECtHR cases (1968-2020) examining systematic country differences in violation findings.
+
+**📁 Complete Repository:** [https://github.com/mattokumus/assignment2](https://github.com/mattokumus/assignment2)
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Academic-green)](LICENSE)
@@ -38,25 +40,23 @@ Our multi-method analysis provides robust evidence:
 ```
 assignment2/
 ├── README.md                              # This file
+├── RESEARCH_DESIGN.md                     # Task 2.1 - Research Design (250 words)
 ├── requirements.txt                       # Python dependencies
 ├── ANALYSIS_REPORT_EN.md                  # Comprehensive English report
 ├── ANALYSIS_REPORT_TR.md                  # Comprehensive Turkish report
 │
-├── Interactive Dashboard:
-│   ├── app.py                             # Streamlit dashboard application
-│   └── DASHBOARD_DEPLOYMENT.md            # Deployment guide
-│
 ├── Data Processing:
-│   ├── assignment2.py                     # Extract data from JSON to CSV
+│   ├── jsondocumenting.py                 # JSON schema documentation & mapping
+│   ├── data_extraction.py                 # Extract & preprocess data (JSON → CSV)
 │   ├── cases-2000.json                    # Raw ECHR case data (Git LFS)
 │   ├── cases-2000_schema.json             # JSON schema documentation
-│   └── extracted_data.csv                 # Processed dataset (1,904 cases)
+│   └── extracted_data.csv                 # Processed dataset (2,000 cases)
 │
 ├── Analysis Scripts:
 │   ├── eda_analysis.py                    # Exploratory Data Analysis
+│   ├── hypotesis_testing.py               # Chi-square & proportion tests
 │   ├── logistic_regression.py             # Country effect models with controls
 │   ├── judge_analysis.py                  # Judge-level analysis
-│   ├── hypotesis_testing.py               # Chi-square & proportion tests
 │   └── ml_models_comparison.py            # ML models (RF, XGBoost, GB) comparison
 │
 ├── Visualizations:
@@ -64,11 +64,12 @@ assignment2/
 │   ├── eda_correlation.png                # Variable correlations (static)
 │   ├── eda_heatmap.png                    # Violation rate heatmap (static)
 │   ├── eda_interactive.html               # EDA interactive dashboard 🎯
-│   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves (static)
-│   ├── logistic_regression_interactive.html # Logistic regression interactive dashboard 🎯
-│   ├── judge_analysis_visualizations.png  # Judge variation, regional bias
 │   ├── hypothesis_test_visualizations.png # Statistical test results (static)
 │   ├── hypothesis_test_interactive.html   # Hypothesis testing interactive dashboard 🎯
+│   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves (static)
+│   ├── logistic_regression_interactive.html # Logistic regression interactive dashboard 🎯
+│   ├── judge_analysis_visualizations.png  # Judge variation, regional bias (static)
+│   ├── judge_analysis_interactive.html    # Judge analysis interactive dashboard 🎯
 │   ├── ml_models_comparison.png           # ML model performance (static)
 │   └── ml_models_interactive.html         # ML models interactive dashboard 🎯
 │
@@ -104,33 +105,18 @@ pip install -r requirements.txt
 git lfs pull
 ```
 
-### Interactive Dashboard (Recommended!)
+### Running the Full Analysis Pipeline
 
-**Explore the data interactively with our Streamlit dashboard:**
-
-```bash
-# Run the interactive dashboard
-streamlit run app.py
-
-# Open browser at: http://localhost:8501
-```
-
-**Features:**
-- 🔍 Filter by country, region, year, article, violation status
-- 📊 Interactive Plotly visualizations
-- 📈 Real-time statistics and trends
-- 📥 Download filtered data as CSV
-- 📱 Responsive design
-
-**Deploy for free:** See [DASHBOARD_DEPLOYMENT.md](DASHBOARD_DEPLOYMENT.md)
-
----
-
-### Running Analyses
+**Complete 7-stage pipeline from raw JSON to ML validation:**
 
 ```bash
-# 1. Extract data from JSON (if needed)
-python3 assignment2.py
+# 0. (Optional) Document JSON structure
+python3 jsondocumenting.py
+# Outputs: cases-2000_documentation.md, cases-2000_schema.json
+
+# 1. Extract & preprocess data from JSON
+python3 data_extraction.py
+# Outputs: extracted_data.csv (2,000 substantive cases)
 
 # 2. Exploratory Data Analysis
 python3 eda_analysis.py
@@ -139,14 +125,14 @@ python3 eda_analysis.py
 #   - eda_heatmap.png (static - Countries × Decades)
 #   - eda_correlation.png (static - correlation matrix)
 #   - eda_interactive.html (interactive Plotly dashboard) 🎯
-#
-# 🌐 Interactive HTML Dashboard Features:
-#   - Double-click to open in browser (no web server needed!)
-#   - Hover for detailed metrics
-#   - Drag to zoom, double-click to reset
-#   - Export as PNG via camera icon
 
-# 3. Logistic Regression Analysis
+# 3. Hypothesis Testing
+python3 hypotesis_testing.py
+# Outputs:
+#   - hypothesis_test_visualizations.png (static - 6 charts)
+#   - hypothesis_test_interactive.html (interactive Plotly dashboard) 🎯
+
+# 4. Logistic Regression Analysis
 python3 logistic_regression.py
 # Outputs:
 #   - logistic_regression_analysis.png (static - 6 charts)
@@ -160,37 +146,13 @@ python3 logistic_regression.py
 #   - Works offline - no internet needed!
 #   - NOTE: Only countries with ≥30 cases included (for statistical reliability)
 
-# 4. Judge-Level Analysis
+# 5. Judge-Level Analysis
 python3 judge_analysis.py
 # Outputs:
 #   - judge_analysis_visualizations.png (static - 6 charts)
 #   - judge_analysis_interactive.html (interactive Plotly dashboard) 🎯
-#
-# 🌐 Interactive HTML Dashboard Features:
-#   - Judge violation rate distribution (≥10 cases filter)
-#   - Top 15 most active judges by case count
-#   - Regional bias distribution (Eastern vs Western difference)
-#   - President vs Non-President violation rates comparison
-#   - Judge experience vs violation rate scatter plot
-#   - Top 10 countries by case count with violation rates
-#   - Hover for judge names, exact values, and statistics
-#   - Correlation coefficients and p-values displayed
 
-# 5. Hypothesis Testing
-python3 hypotesis_testing.py
-# Outputs:
-#   - hypothesis_test_visualizations.png (static - 6 charts)
-#   - hypothesis_test_interactive.html (interactive Plotly dashboard) 🎯
-#
-# 🌐 Interactive HTML Dashboard Features:
-#   - 95% Confidence intervals with error bars
-#   - Regional comparison (Eastern vs Western Europe)
-#   - Temporal comparison (Before vs After 2000)
-#   - Log scale scatter plot for sample size analysis
-#   - Hover for exact values and country names
-#   - NOTE: Only countries with ≥30 cases included (for statistical reliability)
-
-# 6. Machine Learning Models Comparison (NEW!)
+# 6. Machine Learning Models Comparison
 python3 ml_models_comparison.py
 # Outputs:
 #   - ml_models_comparison.png (static visualization)
@@ -356,9 +318,9 @@ This analysis provides three key contributions:
 
 ## 📚 Dataset
 
-**Source:** European Court of Human Rights decisions (2000-2024)
+**Source:** European Court of Human Rights decisions (1968-2020)
 
-**Size:** 1,904 cases from 45 countries
+**Size:** 2,000 substantive cases from 45 countries
 
 **Variables:**
 - `country_name`: Respondent country
