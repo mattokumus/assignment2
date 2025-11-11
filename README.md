@@ -1,6 +1,6 @@
 # Does the European Court of Human Rights Treat Countries Differently?
 
-A comprehensive statistical analysis of 2,000 ECtHR cases (1968-2020) examining systematic country differences in violation findings.
+A comprehensive statistical analysis of 1,904 substantive ECtHR cases (1968-2020) examining systematic country differences in violation findings.
 
 **📁 Complete Repository:** [https://github.com/mattokumus/assignment2](https://github.com/mattokumus/assignment2)
 
@@ -26,10 +26,11 @@ Our multi-method analysis provides robust evidence:
 | Finding | Evidence |
 |---------|----------|
 | **Regional Gap** | Eastern Europe: 93.9% violation rate vs Western Europe: 72.2% (**+21.6 pp**, p < 0.001) |
-| **Country Effects Persist** | 56.2% of countries remain significant after controlling for article type, year, and applicant type |
-| **Judge-Independent** | Country effects persist even after controlling for judge identity (14/16 countries significant) |
-| **Model Performance** | 89% accuracy, AUC-ROC = 0.801 in predicting violations by country |
-| **Judge Regional Bias** | 171 judges show average +29.1 pp higher violation rate for Eastern Europe (t=14.07, p<0.0001) |
+| **Country Effects Persist** | 9/16 countries (56.2%) remain significant after controlling for article type, year, and applicant type |
+| **Judge-Independent** | Country effects persist even after controlling for judge identity (14/16 countries significant with regularization) |
+| **ML Temporal Validation** | XGBoost: 86% accuracy, AUC-ROC = 0.833 (trained on 2000-2014, tested on 2015-2020) |
+| **Cross-Validation Performance** | Random Forest best: AUC-ROC = 0.810 (5-fold CV), demonstrating robust predictive patterns |
+| **Judge Regional Bias** | 140 judges show average +29.1 pp higher violation rate for Eastern Europe (t=14.07, p<0.0001) |
 
 **Important:** These findings do NOT necessarily indicate discrimination. Systematic differences may stem from legitimate factors including case characteristics, domestic legal systems, rule of law variations, and structural factors not captured in our data.
 
@@ -41,6 +42,7 @@ Our multi-method analysis provides robust evidence:
 assignment2/
 ├── README.md                              # This file
 ├── RESEARCH_DESIGN.md                     # Task 2.1 - Research Design (250 words)
+├── REFLECTION.md                          # Task 2.2 - Method capabilities & limitations (250 words)
 ├── requirements.txt                       # Python dependencies
 ├── ANALYSIS_REPORT_EN.md                  # Comprehensive English report
 ├── ANALYSIS_REPORT_TR.md                  # Comprehensive Turkish report
@@ -116,7 +118,9 @@ python3 jsondocumenting.py
 
 # 1. Extract & preprocess data from JSON
 python3 data_extraction.py
-# Outputs: extracted_data.csv (2,000 substantive cases)
+# Outputs: extracted_data.csv (1,904 substantive cases)
+# Note: Filters to substantive decisions only (violation/no-violation)
+# Excludes procedural outcomes (inadmissible, struck out)
 
 # 2. Exploratory Data Analysis
 python3 eda_analysis.py
@@ -162,6 +166,12 @@ python3 ml_models_comparison.py
 # Evaluation: 5-fold cross-validation with ROC-AUC, F1, Precision, Recall
 # Split strategies: Random (stratified) + Temporal (2015 cutoff)
 # Temporal split: Train on 2000-2014, Test on 2015-2020 for realistic generalization
+#
+# 🏆 Best Results:
+#   - Cross-Validation: Random Forest (AUC: 0.810, F1: 0.889)
+#   - Temporal Test: XGBoost (AUC: 0.833, Accuracy: 86.0%, F1: 0.919)
+#   - Temporal performance > Random split: +6.5% average improvement
+#   - Indicates stable patterns across time (no concept drift)
 #
 # 🌐 Interactive HTML Dashboard Features:
 #   - Double-click to open in browser (no web server needed!)
@@ -245,15 +255,17 @@ Significant Countries (9/16, 56.2%):
 
 ```
 Judge Regional Bias:
-- 171 judges analyzed (min 20 cases each)
+- 403 unique judges in dataset, 156 with ≥20 cases (for reliable estimates)
+- 140 judges with both Eastern & Western Europe cases
 - Average East-West difference: +29.1 pp
 - t-statistic: 14.07 (p < 0.0001)
 - Interpretation: Nearly ALL judges find more violations in Eastern Europe
 
-Model Comparison:
-- Without judge control: 14/16 countries significant
-- With judge control: 14/16 countries significant
-- Conclusion: Country effects persist completely
+Model Comparison (Lasso Regularization):
+- Without judge control: 14/16 countries significant (|coef| > 0.5)
+- With judge control: 14/16 countries significant (|coef| > 0.5)
+- Average country coefficient magnitude: 2.249 → 2.303 (+2.4%)
+- Conclusion: Country effects persist completely after judge controls
 ```
 
 ---
@@ -272,47 +284,68 @@ Model Comparison:
 ![Judge Analysis](judge_analysis_visualizations.png)
 *Judge violation rate distribution, regional bias, president effects, top countries*
 
+### Machine Learning Models Comparison
+![ML Models](ml_models_comparison.png)
+*ROC curves, cross-validation performance, confusion matrices, feature importance, temporal validation*
+
 ---
 
 ## ⚠️ Important Caveats
 
+**📖 For detailed reflection on method capabilities and limitations, see [REFLECTION.md](REFLECTION.md)**
+
 1. **Statistical significance ≠ Discrimination**
    - Systematic differences may reflect legitimate factors
+   - Cannot distinguish judicial bias from genuine human rights conditions
+   - Country effects may accurately mirror domestic rule-of-law variations
 
 2. **Unmeasured confounders**
-   - Case complexity not captured
+   - Case complexity not captured (legal argument sophistication)
    - Quality of legal representation unknown
-   - Strength of evidence varies
+   - Strength of evidence varies across cases
+   - Domestic legal context differences
 
 3. **Selection bias**
-   - Only cases reaching ECtHR (filtered by admissibility)
-   - May not represent all violations
+   - Only cases surviving domestic remedies reach ECtHR
+   - Admissibility thresholds filter cases before judicial review
+   - Observed patterns may reflect pre-selection, not Court treatment
+   - High violation rate (89.1%) indicates case selection effects
 
-4. **Observational data**
-   - Causal claims limited
+4. **Observational data limitations**
    - Correlation established, not causation
+   - Cannot demonstrate discrimination without experimental manipulation
+   - Regional patterns may reflect post-communist challenges vs discriminatory scrutiny
 
-5. **Limited time period**
-   - 2000-2024 only
-   - Historical context may differ
+5. **Temporal coverage**
+   - 1968-2020 period
+   - Most cases concentrated 2000-2020 (90.5%)
+   - Historical context differs across eras
 
 ---
 
 ## 🎓 Academic Contribution
 
-This analysis provides three key contributions:
+This analysis provides four key contributions:
 
-1. **Multi-method validation**
-   - Converging evidence from EDA, regression, and judge analysis
-   - Robust finding across multiple specifications
+1. **Multi-method triangulation**
+   - Converging evidence from EDA, hypothesis testing, logistic regression, judge analysis, and ML
+   - Robust findings across 5 different analytical approaches
+   - Statistical significance confirmed via multiple independent tests
 
 2. **Alternative hypothesis testing**
-   - Rules out "judge lottery" explanation
+   - Rules out "judge lottery" explanation via judge fixed-effects models
    - Shows country effects are systematic, not idiosyncratic
+   - Demonstrates regional bias exists across nearly all judges
 
-3. **Comprehensive transparency**
+3. **Temporal validation**
+   - ML models trained on 2000-2014, tested on 2015-2020
+   - High performance (AUC=0.833) indicates stable patterns
+   - No concept drift detected, suggesting structural factors
+
+4. **Comprehensive transparency**
    - All code, data, and methods publicly available
-   - Reproducible research pipeline
+   - Reproducible research pipeline with detailed documentation
+   - Clear articulation of what methods can and cannot demonstrate (see REFLECTION.md)
 
 ---
 
@@ -320,7 +353,7 @@ This analysis provides three key contributions:
 
 **Source:** European Court of Human Rights decisions (1968-2020)
 
-**Size:** 2,000 substantive cases from 45 countries
+**Size:** 1,904 substantive cases from 45 countries (procedural cases excluded)
 
 **Variables:**
 - `country_name`: Respondent country
@@ -339,26 +372,32 @@ This analysis provides three key contributions:
 ## 🔬 Future Research Directions
 
 1. **Case-level complexity measures**
-   - Legal argument sophistication
+   - Legal argument sophistication scores
    - Evidence strength coding
+   - Length and quality of legal representation
 
 2. **Article-specific analysis**
    - Separate models by Article (3, 5, 6, 8, etc.)
-   - Different patterns may emerge
+   - Different patterns may emerge for different rights
+   - Article-specific temporal trends
 
 3. **Domestic legal system variables**
-   - Rule of law indices
-   - Judicial independence scores
-   - Democratic quality measures
+   - Rule of law indices (World Justice Project)
+   - Judicial independence scores (V-Dem)
+   - Democratic quality measures (Freedom House, Polity IV)
+   - Correlation with domestic human rights conditions
 
 4. **Temporal dynamics**
    - Changes over time within countries
-   - EU accession effects
+   - EU accession effects and pre/post comparisons
+   - Impact of specific ECtHR precedents
+   - Judge tenure and experience effects
 
-5. **Machine learning approaches**
-   - Random forests, gradient boosting
-   - Interaction effects
-   - Non-linear patterns
+5. **Causal inference approaches**
+   - Difference-in-differences for policy changes
+   - Regression discontinuity designs
+   - Instrumental variable approaches for judge assignment
+   - Matching methods for case similarity
 
 ---
 
@@ -419,6 +458,6 @@ GitHub repository: https://github.com/mattokumus/assignment2
 
 ---
 
-**Last Updated:** November 2024
+**Last Updated:** November 11, 2025
 
-**Status:** ✅ Complete - Reproducible research pipeline with comprehensive documentation
+**Status:** ✅ Complete - Full 7-stage analysis pipeline executed with comprehensive documentation and reflective assessment
