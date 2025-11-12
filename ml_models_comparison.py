@@ -347,7 +347,7 @@ def create_interactive_dashboard(models_random, models_temporal,
         specs=[[{"type": "scatter"}, {"type": "bar"}, {"type": "bar"}],
                [{"type": "bar"}, {"type": "bar"}, {"type": "bar"}],
                [{"type": "heatmap"}, {"type": "heatmap"}, {"type": "bar"}]],
-        vertical_spacing=0.12, horizontal_spacing=0.1
+        vertical_spacing=0.16, horizontal_spacing=0.1
     )
 
     # 1. ROC Curves with hover
@@ -395,20 +395,20 @@ def create_interactive_dashboard(models_random, models_temporal,
     random_f1 = [test_results_random[n]['f1'] for n in model_names]
     temporal_f1 = [test_results_temporal[n]['f1'] for n in model_names]
     fig.add_trace(go.Bar(x=model_names, y=random_f1, name='Random F1',
-                         marker_color='lightcoral', showlegend=False,
+                         marker_color='lightcoral', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>F1: %{y:.3f}<extra></extra>'), row=2, col=2)
     fig.add_trace(go.Bar(x=model_names, y=temporal_f1, name='Temporal F1',
-                         marker_color='darkred', showlegend=False,
+                         marker_color='darkred', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>F1: %{y:.3f}<extra></extra>'), row=2, col=2)
 
     # 6. Accuracy comparison
     random_acc = [test_results_random[n]['accuracy'] for n in model_names]
     temporal_acc = [test_results_temporal[n]['accuracy'] for n in model_names]
     fig.add_trace(go.Bar(x=model_names, y=random_acc, name='Random Acc',
-                         marker_color='lightgreen', showlegend=False,
+                         marker_color='lightgreen', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>Acc: %{y:.1%}<extra></extra>'), row=2, col=3)
     fig.add_trace(go.Bar(x=model_names, y=temporal_acc, name='Temporal Acc',
-                         marker_color='darkgreen', showlegend=False,
+                         marker_color='darkgreen', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>Acc: %{y:.1%}<extra></extra>'), row=2, col=3)
 
     # 7. Confusion matrix - Random Forest (Random)
