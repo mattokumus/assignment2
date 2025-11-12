@@ -630,7 +630,7 @@ def main():
     # ========================================================================
     print("\n" + "=" * 80)
     print("STRATEGY 2: TEMPORAL SPLIT (2015 CUTOFF)")
-    print("Train: 2000-2014, Test: 2015-2020 - realistic generalization")
+    print("Train on ALL < 2015, Test: 2015-2020 - realistic generalization")
     print("=" * 80)
 
     # Get year information from original df_model (before encoding)
