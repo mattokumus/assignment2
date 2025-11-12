@@ -356,6 +356,6 @@ GitHub repository: https://github.com/mattokumus/assignment2
 
 ---
 
-**Last Updated:** November 2024
+**Last Updated:** November 2025
 
 **Status:** ✅ Complete - All scripts tested and working
