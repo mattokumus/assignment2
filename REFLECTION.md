@@ -5,7 +5,3 @@ Our multi-method triangulation approach reveals robust statistical associations 
 However, our methods cannot establish whether these associations constitute discrimination. Statistical significance does not equal causation, bias, or unjust treatment. Critical unmeasured confounders include case complexity, quality of legal representation, strength of evidence, and domestic legal context—factors potentially correlated with country that legitimately influence outcomes. The dataset reflects profound selection bias: only cases surviving domestic remedies and admissibility thresholds reach the ECtHR, meaning observed patterns may reflect pre-selection rather than Court treatment. We cannot distinguish whether higher violation rates for certain countries indicate judicial prejudice or simply mirror genuine human rights conditions domestically.
 
 Moreover, our observational design cannot determine whether Eastern Europe's higher violation rates reflect discriminatory scrutiny or accurately correspond to post-communist rule-of-law challenges. The persistent country effects after controls suggest systematic differences exist, but whether these differences are normatively problematic or procedurally justified remains beyond our analytical reach. Our findings establish correlation deserving scrutiny but cannot demonstrate discrimination without experimental manipulation or deeper qualitative investigation into decision-making processes.
-
----
-
-**Word count:** 250 words

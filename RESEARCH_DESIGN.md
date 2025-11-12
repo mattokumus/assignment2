@@ -26,6 +26,3 @@
 
 **Robustness Checks:** Minimum sample thresholds (≥30 cases/country), regional aggregation, temporal split validation, and judge fixed-effects ensure finding robustness. Statistical association cannot definitively prove discrimination, as unmeasured confounders (case complexity, representation quality) may explain observed patterns.
 
----
-
-**Word count:** ~285 words (7-stage pipeline documented)
