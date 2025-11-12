@@ -130,12 +130,12 @@ def baseline_model(df):
     print(f"   • Log-Likelihood: {result.llf:.2f}")
     print(f"   • AIC: {result.aic:.2f}")
     print(f"   • Pseudo R²: {result.prsquared:.4f}")
-    
-    # Get significant countries
-    significant_countries = result.pvalues[result.pvalues < 0.05].index
+
+    # Get significant countries (excluding constant)
+    significant_count = (result.pvalues < 0.05).sum() - 1  # -1 for constant
     print(f"\n🎯 Significant Country Effects:")
-    print(f"   • {len(significant_countries)} countries significant at p < 0.05")
-    
+    print(f"   • {significant_count} countries significant at p < 0.05")
+
     # Extract odds ratios for top effects
     odds_ratios = np.exp(result.params)
     top_effects = odds_ratios.drop('const').sort_values(ascending=False).head(10)
