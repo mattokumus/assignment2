@@ -448,7 +448,7 @@ GitHub repository: https://github.com/mattokumus/assignment2
 ## 📧 Contact
 
 - **GitHub:** [@mattokumus](https://github.com/mattokumus)
-- **Email:** matt.okumus@outlook.com
+- **Email:** matthio@uio.no
 - **Institution:** UIO
 
 ---
