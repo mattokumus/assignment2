@@ -750,7 +750,7 @@ def main():
     print(f"   - Total features: {len(feature_names)}")
     print(f"   - Total cases: {len(X)}")
     print(f"   - Random split: {len(X_train_random)} train / {len(X_test_random)} test")
-    print(f"   - Temporal split: {len(X_train_temporal)} train (2000-2014) / {len(X_test_temporal)} test (2015-2020)")
+    print(f"   - Temporal split: {len(X_train_temporal)} train on ALL < 2015 / {len(X_test_temporal)} test (2015-2020)")
 
     print("\n" + "=" * 80)
     print("💡 INTERPRETATION:")
