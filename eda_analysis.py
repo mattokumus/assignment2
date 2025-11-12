@@ -657,11 +657,11 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Violation<br>Rate', side='right'),
                 tickformat='.0%',
-                x=0.63,
+                x=1.02,
                 xanchor='left',
-                y=0.15,
+                y=0.65,
                 yanchor='middle',
-                len=0.35,
+                len=0.25,
                 thickness=12
             ),
             name='Heatmap'
@@ -686,11 +686,11 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Correlation', side='right'),
                 tickformat='.2f',
-                x=1.05,
+                x=1.02,
                 xanchor='left',
-                y=0.15,
+                y=0.25,
                 yanchor='middle',
-                len=0.35,
+                len=0.25,
                 thickness=12
             ),
             name='Correlation'
