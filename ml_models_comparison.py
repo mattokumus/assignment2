@@ -758,7 +758,7 @@ def main():
     print("   ✅ Random split: Standard ML validation (optimistic)")
     print("   ✅ Temporal split: Realistic generalization test (past→future)")
     print("   ✅ Temporal outperformance indicates:")
-    print("      • ECHR patterns remain stable over time (2000-2020)")
+    print("      • ECHR patterns remain stable over time (1968-2020)")
     print("      • No significant concept drift detected")
     print("      • Models can reliably predict future case outcomes")
     print("      • Regional bias findings are temporally robust")
