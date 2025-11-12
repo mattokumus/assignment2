@@ -50,6 +50,48 @@
             line-height: 1.6;
         }
 
+        .fullscreen-notice {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .fullscreen-notice-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .fullscreen-notice-icon {
+            font-size: 1.5em;
+        }
+
+        .fullscreen-notice-text {
+            font-size: 1em;
+            line-height: 1.5;
+            opacity: 0.95;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            }
+        }
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -141,6 +183,17 @@
                 in violation findings between Eastern and Western European countries.
             </p>
         </header>
+
+        <div class="fullscreen-notice">
+            <div class="fullscreen-notice-title">
+                <span class="fullscreen-notice-icon">🖥️</span>
+                <span>Important: View in Full Screen for Best Experience</span>
+            </div>
+            <div class="fullscreen-notice-text">
+                For optimal visualization, please open dashboards in <strong>full screen mode</strong> (press F11 or click the maximize button).
+                The interactive graphs contain detailed information that requires adequate screen space.
+            </div>
+        </div>
 
         <div class="dashboard-grid">
             <a href="eda_interactive.html" class="dashboard-card" target="_blank">
