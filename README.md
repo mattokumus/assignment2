@@ -417,7 +417,7 @@ This is an academic research project. For questions, suggestions, or collaborati
 
 1. Open an issue
 2. Submit a pull request
-3. Contact: [Your contact information]
+3. Contact: matt.okumus@outlook.com
 
 ---
 
@@ -446,8 +446,8 @@ GitHub repository: https://github.com/mattokumus/assignment2
 ## 📧 Contact
 
 - **GitHub:** [@mattokumus](https://github.com/mattokumus)
-- **Email:** [Your email]
-- **Institution:** [Your institution]
+- **Email:** matt.okumus@outlook.com
+- **Institution:** UIO
 
 ---
 
