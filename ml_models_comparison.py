@@ -441,7 +441,7 @@ def create_interactive_dashboard(models_random, models_temporal,
                'x': 0.5, 'xanchor': 'center',
                'font': {'size': 16, 'color': 'darkblue', 'family': 'Arial Black'}},
         height=1500, showlegend=True,
-        margin=dict(t=150, b=50, l=50, r=50),
+        margin=dict(t=180, b=50, l=50, r=50),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(size=8)),
         hovermode='closest', template='plotly_white', font=dict(size=9)
     )
