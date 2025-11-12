@@ -508,7 +508,7 @@ def create_interactive_dashboard(df):
             [{'type': 'heatmap', 'colspan': 2}, None, {'type': 'heatmap'}]
         ],
         column_widths=[0.26, 0.26, 0.30],  # Adjust column widths for better spacing
-        vertical_spacing=0.12,
+        vertical_spacing=0.18,
         horizontal_spacing=0.10,
         row_heights=[0.30, 0.30, 0.40]
     )
@@ -721,6 +721,7 @@ def create_interactive_dashboard(df):
             'font': {'size': 20}
         },
         height=1400,
+        margin=dict(t=120, b=80, l=50, r=50),
         showlegend=False,
         hovermode='closest',
         template='plotly_white',
