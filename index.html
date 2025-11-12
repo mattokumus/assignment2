@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHR Regional Bias Analysis - Interactive Dashboards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 1em;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-desc {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .dashboard-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 20px;
+            opacity: 0.8;
+        }
+
+        .github-link {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid white;
+            transition: opacity 0.3s;
+        }
+
+        .github-link:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ ECHR Regional Bias Analysis</h1>
+            <p class="subtitle">Interactive Statistical Dashboards</p>
+            <p class="description">
+                Comprehensive analysis of European Court of Human Rights decisions (1968-2020) examining potential regional bias
+                in violation findings between Eastern and Western European countries.
+            </p>
+        </header>
+
+        <div class="dashboard-grid">
+            <a href="eda_interactive.html" class="dashboard-card" target="_blank">
+                <div class="dashboard-icon">📊</div>
+                <div class="dashboard-title">Exploratory Data Analysis</div>
+                <div class="dashboard-desc">
+                    Interactive overview of dataset characteristics, violation rates by country and region,
+                    temporal trends, and primary article distributions.
+                </div>
+                <span class="dashboard-badge">Descriptive Statistics</span>
+            </a>
+
+            <a href="hypothesis_test_interactive.html" class="dashboard-card" target="_blank">
+                <div class="dashboard-icon">🔬</div>
+                <div class="dashboard-title">Hypothesis Testing</div>
+                <div class="dashboard-desc">
+                    Statistical significance tests comparing Eastern vs Western Europe violation rates.
+                    Chi-square, proportion tests, and effect size analysis.
+                </div>
+                <span class="dashboard-badge">Inferential Statistics</span>
+            </a>
+
+            <a href="logistic_regression_interactive.html" class="dashboard-card" target="_blank">
+                <div class="dashboard-icon">📈</div>
+                <div class="dashboard-title">Logistic Regression</div>
+                <div class="dashboard-desc">
+                    Country-level logistic regression models controlling for case characteristics.
+                    Odds ratios, confidence intervals, and coefficient visualization.
+                </div>
+                <span class="dashboard-badge">Regression Analysis</span>
+            </a>
+
+            <a href="judge_analysis_interactive.html" class="dashboard-card" target="_blank">
+                <div class="dashboard-icon">⚖️</div>
+                <div class="dashboard-title">Judge Fixed Effects</div>
+                <div class="dashboard-desc">
+                    Judge-level analysis testing whether country effects persist after controlling
+                    for individual judge identities. Systematic vs idiosyncratic bias.
+                </div>
+                <span class="dashboard-badge">Advanced Modeling</span>
+            </a>
+
+            <a href="ml_models_interactive.html" class="dashboard-card" target="_blank">
+                <div class="dashboard-icon">🤖</div>
+                <div class="dashboard-title">Machine Learning Models</div>
+                <div class="dashboard-desc">
+                    Predictive modeling with Random Forest, XGBoost, and Gradient Boosting.
+                    ROC curves, feature importance, temporal validation, and model comparison.
+                </div>
+                <span class="dashboard-badge">ML & Prediction</span>
+            </a>
+        </div>
+
+        <footer>
+            <p>
+                <strong>Research Project:</strong> Statistical Analysis of Regional Patterns in ECHR Decisions
+            </p>
+            <p style="margin-top: 10px;">
+                Data Source: European Court of Human Rights (HUDOC Database) |
+                <a href="https://github.com/mattokumus/assignment2" class="github-link" target="_blank">View on GitHub</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
