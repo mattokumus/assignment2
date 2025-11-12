@@ -511,9 +511,9 @@ def create_interactive_dashboard(df):
             [{'type': 'heatmap', 'colspan': 3}, None, None],
             [{'type': 'heatmap', 'colspan': 3}, None, None]
         ],
-        vertical_spacing=0.12,
+        vertical_spacing=0.20,
         horizontal_spacing=0.10,
-        row_heights=[0.23, 0.23, 0.27, 0.27]
+        row_heights=[0.20, 0.20, 0.30, 0.30]
     )
 
     # === ROW 1, COL 1: Top 15 Countries by Case Count ===
@@ -723,7 +723,7 @@ def create_interactive_dashboard(df):
             'xanchor': 'center',
             'font': {'size': 20}
         },
-        height=1600,
+        height=1900,
         margin=dict(t=120, b=80, l=50, r=50),
         showlegend=False,
         hovermode='closest',
