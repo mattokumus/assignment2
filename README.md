@@ -237,11 +237,11 @@ python3 ml_models_comparison.py
 
 | Decision | Rationale |
 |----------|-----------|
+| **Substantive cases only** | Filters to violation/no-violation decisions; excludes procedural outcomes (inadmissible, struck out) |
 | **Min 30 cases/country** | Statistical power and reliable estimates (logistic regression & ML models) |
 | **Min 20 cases/judge** | Sufficient sample for judge-specific patterns |
-| **L1 Regularization** | Handles collinearity, prevents overfitting |
 | **Regional Classification** | Eastern Europe (23 countries) vs Western Europe (22 countries) based on post-communist transition |
-| **Turkey Classification** | Included in Eastern Europe based on ECHR case characteristics and democratization trajectory |
+| **Temporal validation** | ML models trained on 1968-2014, tested on 2015-2020 to assess pattern stability over time |
 
 ---
 
