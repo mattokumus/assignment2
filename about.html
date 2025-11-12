@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About This Project - ECHR Regional Bias Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .about-section {
+            background: white;
+            border-radius: 15px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+        }
+
+        .about-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .about-question {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 10px;
+        }
+
+        .project-desc {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .finding-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .finding-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .finding-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .finding-value {
+            color: #333;
+            font-size: 1em;
+            line-height: 1.8;
+        }
+
+        .methodology-section {
+            margin: 50px 0;
+        }
+
+        .methodology-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .methodology-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .methodology-list li {
+            padding: 18px 0 18px 45px;
+            position: relative;
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.05em;
+            border-bottom: 1px solid #eee;
+        }
+
+        .methodology-list li:last-child {
+            border-bottom: none;
+        }
+
+        .methodology-list li::before {
+            content: "▸";
+            position: absolute;
+            left: 20px;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .caveat-box {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(238, 90, 111, 0.1) 100%);
+            border-left: 5px solid #ff6b6b;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 50px 0;
+        }
+
+        .caveat-title {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .caveat-text {
+            color: #555;
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        .caveat-text ul {
+            margin: 15px 0 0 25px;
+            line-height: 2;
+        }
+
+        .readme-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 45px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.15em;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .readme-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 20px;
+            opacity: 0.9;
+        }
+
+        .github-link {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid white;
+            transition: opacity 0.3s;
+        }
+
+        .github-link:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .about-section {
+                padding: 30px 25px;
+            }
+
+            .about-title {
+                font-size: 2em;
+            }
+
+            .about-question {
+                font-size: 1.2em;
+            }
+
+            .findings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Back to Dashboards</a>
+
+        <div class="about-section">
+            <div class="about-title">📖 About This Project</div>
+
+            <div class="about-question">
+                "Does the European Court of Human Rights Treat Countries Differently?"
+            </div>
+
+            <p class="project-desc">
+                A comprehensive statistical analysis of <strong>1,904 substantive ECtHR cases (1968-2020)</strong> examining
+                systematic country differences in violation findings using multi-method triangulation approach.
+            </p>
+
+            <div class="findings-grid">
+                <div class="finding-card">
+                    <div class="finding-title">🌍 Regional Gap</div>
+                    <div class="finding-value">
+                        Eastern Europe: <strong>93.9% violation rate</strong><br>
+                        Western Europe: <strong>72.2% violation rate</strong><br>
+                        Difference: <strong>+21.6 percentage points (p < 0.001)</strong>
+                    </div>
+                </div>
+
+                <div class="finding-card">
+                    <div class="finding-title">📊 Country Effects Persist</div>
+                    <div class="finding-value">
+                        <strong>9/16 countries (56.2%)</strong> remain statistically significant after controlling for article type, year, and applicant type.
+                        Odds ratios range from 3.49 (Croatia) to 32.45 (Ukraine).
+                    </div>
+                </div>
+
+                <div class="finding-card">
+                    <div class="finding-title">⚖️ Judge-Independent</div>
+                    <div class="finding-value">
+                        Country effects persist even after controlling for individual judge identity.
+                        <strong>140 judges</strong> show average <strong>+29.1 pp</strong> higher violation rate for Eastern Europe (t=14.07, p<0.0001).
+                    </div>
+                </div>
+
+                <div class="finding-card">
+                    <div class="finding-title">🤖 ML Temporal Validation</div>
+                    <div class="finding-value">
+                        XGBoost model trained on 2000-2014 data, tested on 2015-2020:<br>
+                        <strong>86% accuracy, AUC-ROC = 0.833</strong><br>
+                        Indicates stable, predictable patterns across time periods.
+                    </div>
+                </div>
+
+                <div class="finding-card">
+                    <div class="finding-title">🎯 Cross-Validation Performance</div>
+                    <div class="finding-value">
+                        Random Forest best overall performer:<br>
+                        <strong>AUC-ROC = 0.810 (5-fold CV)</strong><br>
+                        Demonstrates robust predictive patterns across different data splits and configurations.
+                    </div>
+                </div>
+
+                <div class="finding-card">
+                    <div class="finding-title">📈 High Overall Violation Rate</div>
+                    <div class="finding-value">
+                        Overall violation rate: <strong>89.1%</strong><br>
+                        Indicates strong case selection effects—only cases with merit survive domestic remedies and reach final ECtHR judgment.
+                    </div>
+                </div>
+            </div>
+
+            <div class="methodology-section">
+                <div class="methodology-title">🔬 Multi-Method Triangulation Approach</div>
+                <ul class="methodology-list">
+                    <li><strong>Exploratory Data Analysis:</strong> Descriptive statistics, temporal trends (1968-2020), and violation rates by country/region/article type across 1,904 substantive cases from 45 countries</li>
+                    <li><strong>Hypothesis Testing:</strong> Chi-square tests, two-proportion z-tests, and Cohen's h effect size analysis comparing Eastern vs Western Europe (p < 0.001, large effect size)</li>
+                    <li><strong>Logistic Regression:</strong> Country-level models with L1 regularization (Lasso) controlling for article type, judgment year, and applicant type (Pseudo R² = 0.226, AUC = 0.801)</li>
+                    <li><strong>Judge Fixed Effects:</strong> Advanced models testing whether country effects persist after controlling for 403 unique judges (171 judges with ≥20 cases analyzed in detail)</li>
+                    <li><strong>Machine Learning:</strong> Random Forest, XGBoost, and Gradient Boosting with 5-fold cross-validation and temporal validation (train: 2000-2014, test: 2015-2020)</li>
+                </ul>
+            </div>
+
+            <div class="caveat-box">
+                <div class="caveat-title">⚠️ Important Caveats & Limitations</div>
+                <div class="caveat-text">
+                    <strong>Statistical significance ≠ Discrimination.</strong> These findings do NOT necessarily indicate judicial bias or discriminatory treatment by the Court.
+                    Systematic differences may reflect legitimate factors including:
+                    <ul>
+                        <li><strong>Genuine human rights conditions:</strong> Rule-of-law variations and actual human rights situations differ across countries</li>
+                        <li><strong>Unmeasured case characteristics:</strong> Case complexity, quality of legal representation, and strength of evidence not captured in available data</li>
+                        <li><strong>Selection bias:</strong> Only cases surviving domestic remedies and passing admissibility thresholds reach ECtHR final judgment stage</li>
+                        <li><strong>Post-communist transition challenges:</strong> Observational data cannot distinguish between structural challenges vs discriminatory scrutiny</li>
+                    </ul>
+                    This analysis establishes <strong>correlation, not causation</strong>. We demonstrate systematic patterns exist, but cannot determine their underlying cause without experimental manipulation. See full documentation (REFLECTION.md) for detailed methodological limitations.
+                </div>
+            </div>
+
+            <div class="button-container">
+                <a href="https://github.com/mattokumus/assignment2/blob/main/README.md" class="readme-button" target="_blank">
+                    📄 Read Full Documentation on GitHub
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                <strong>Research Project:</strong> Statistical Analysis of Regional Patterns in ECHR Decisions
+            </p>
+            <p style="margin-top: 10px;">
+                Data Source: <a href="https://www.uio.no/studier/emner/jus/jus/JUS5080/h24/datasets/" class="github-link" target="_blank">University of Oslo - JUS5080 Course Datasets</a> (cases-2000.json) |
+                <a href="https://github.com/mattokumus/assignment2" class="github-link" target="_blank">View Repository</a> |
+                <a href="index.html" class="github-link">Back to Dashboards</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

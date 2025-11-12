@@ -162,150 +162,12 @@
             opacity: 0.7;
         }
 
-        .about-section {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 40px;
-        }
-
-        .about-title {
-            font-size: 2em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .about-question {
-            font-size: 1.3em;
-            color: #667eea;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-radius: 10px;
-        }
-
-        .findings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .finding-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        .finding-title {
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        .finding-value {
-            color: #333;
-            font-size: 0.95em;
-            line-height: 1.6;
-        }
-
-        .methodology-section {
-            margin: 30px 0;
-        }
-
-        .methodology-title {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .methodology-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .methodology-list li {
-            padding: 12px 0 12px 35px;
-            position: relative;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .methodology-list li::before {
-            content: "▸";
-            position: absolute;
-            left: 15px;
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .caveat-box {
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(238, 90, 111, 0.1) 100%);
-            border-left: 4px solid #ff6b6b;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-        }
-
-        .caveat-title {
-            font-weight: bold;
-            color: #ff6b6b;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        .caveat-text {
-            color: #555;
-            font-size: 0.95em;
-            line-height: 1.6;
-        }
-
-        .readme-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 40px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            margin-top: 20px;
-        }
-
-        .readme-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-        }
-
-        .button-container {
-            text-align: center;
-            margin-top: 30px;
-        }
-
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.8em;
             }
 
             .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .about-section {
-                padding: 25px;
-            }
-
-            .findings-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -383,104 +245,16 @@
                 </div>
                 <span class="dashboard-badge">ML & Prediction</span>
             </a>
-        </div>
 
-        <div class="about-section">
-            <div class="about-title">📖 About This Project</div>
-
-            <div class="about-question">
-                "Does the European Court of Human Rights Treat Countries Differently?"
-            </div>
-
-            <p style="text-align: center; color: #666; margin-bottom: 30px; line-height: 1.6;">
-                A comprehensive statistical analysis of <strong>1,904 substantive ECtHR cases (1968-2020)</strong> examining
-                systematic country differences in violation findings using multi-method triangulation.
-            </p>
-
-            <div class="findings-grid">
-                <div class="finding-card">
-                    <div class="finding-title">🌍 Regional Gap</div>
-                    <div class="finding-value">
-                        Eastern Europe: <strong>93.9% violation rate</strong><br>
-                        Western Europe: <strong>72.2% violation rate</strong><br>
-                        Difference: <strong>+21.6 pp (p < 0.001)</strong>
-                    </div>
+            <a href="about.html" class="dashboard-card" target="_blank">
+                <div class="dashboard-icon">📖</div>
+                <div class="dashboard-title">About This Project</div>
+                <div class="dashboard-desc">
+                    Research question, key findings, methodology overview, and important caveats.
+                    Comprehensive summary of the entire analysis pipeline.
                 </div>
-
-                <div class="finding-card">
-                    <div class="finding-title">📊 Country Effects Persist</div>
-                    <div class="finding-value">
-                        <strong>9/16 countries (56.2%)</strong> remain significant after controlling for article type, year, and applicant type.
-                        Odds ratios range from 3.49 (Croatia) to 32.45 (Ukraine).
-                    </div>
-                </div>
-
-                <div class="finding-card">
-                    <div class="finding-title">⚖️ Judge-Independent</div>
-                    <div class="finding-value">
-                        Country effects persist even after controlling for judge identity.
-                        <strong>140 judges</strong> show average <strong>+29.1 pp</strong> higher violation rate for Eastern Europe (t=14.07, p<0.0001).
-                    </div>
-                </div>
-
-                <div class="finding-card">
-                    <div class="finding-title">🤖 ML Temporal Validation</div>
-                    <div class="finding-value">
-                        XGBoost trained on 2000-2014, tested on 2015-2020:<br>
-                        <strong>86% accuracy, AUC-ROC = 0.833</strong><br>
-                        Indicates stable, predictable patterns across time.
-                    </div>
-                </div>
-
-                <div class="finding-card">
-                    <div class="finding-title">🎯 Cross-Validation Performance</div>
-                    <div class="finding-value">
-                        Random Forest best performer:<br>
-                        <strong>AUC-ROC = 0.810 (5-fold CV)</strong><br>
-                        Demonstrates robust predictive patterns across different data splits.
-                    </div>
-                </div>
-
-                <div class="finding-card">
-                    <div class="finding-title">📈 High Violation Rate</div>
-                    <div class="finding-value">
-                        Overall violation rate: <strong>89.1%</strong><br>
-                        Indicates strong case selection effects—only strong cases reach final judgment stage.
-                    </div>
-                </div>
-            </div>
-
-            <div class="methodology-section">
-                <div class="methodology-title">🔬 Multi-Method Approach</div>
-                <ul class="methodology-list">
-                    <li><strong>Exploratory Data Analysis:</strong> Descriptive statistics, temporal trends, violation rates by country/region/article type across 1,904 cases from 45 countries</li>
-                    <li><strong>Hypothesis Testing:</strong> Chi-square tests, proportion tests, and effect size analysis comparing Eastern vs Western Europe (p < 0.001)</li>
-                    <li><strong>Logistic Regression:</strong> Country-level models with L1 regularization controlling for article type, year, and applicant type (Pseudo R² = 0.226, AUC = 0.801)</li>
-                    <li><strong>Judge Fixed Effects:</strong> Tests whether country effects persist after controlling for 403 unique judges (171 judges with ≥20 cases analyzed)</li>
-                    <li><strong>Machine Learning:</strong> Random Forest, XGBoost, and Gradient Boosting with temporal validation (2000-2014 train, 2015-2020 test)</li>
-                </ul>
-            </div>
-
-            <div class="caveat-box">
-                <div class="caveat-title">⚠️ Important Caveats</div>
-                <div class="caveat-text">
-                    <strong>Statistical significance ≠ Discrimination.</strong> These findings do NOT necessarily indicate judicial bias.
-                    Systematic differences may reflect legitimate factors including:
-                    <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
-                        <li>Genuine human rights conditions and rule-of-law variations across countries</li>
-                        <li>Case complexity, quality of legal representation, and strength of evidence (not captured in data)</li>
-                        <li>Selection bias: only cases surviving domestic remedies and admissibility thresholds reach ECtHR</li>
-                        <li>Post-communist transition challenges vs discriminatory scrutiny (observational data cannot distinguish)</li>
-                    </ul>
-                    This analysis establishes <strong>correlation, not causation</strong>. See full documentation for detailed methodological limitations.
-                </div>
-            </div>
-
-            <div class="button-container">
-                <a href="https://github.com/mattokumus/assignment2/blob/main/README.md" class="readme-button" target="_blank">
-                    📄 Read Full Documentation on GitHub
-                </a>
-            </div>
+                <span class="dashboard-badge">Project Information</span>
+            </a>
         </div>
 
         <footer>
