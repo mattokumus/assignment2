@@ -22,7 +22,7 @@
 
 6. **Judge-Level Analysis** (judge_analysis.py): Tests whether country effects persist after controlling for panel composition (president identity, judge names), distinguishing systematic patterns from judge-specific variation.
 
-7. **Machine Learning Validation** (ml_models_comparison.py): Random Forest and XGBoost validate findings through cross-validation and temporal validation (pre-2015 training, post-2015 testing).
+7. **Machine Learning Validation** (ml_models_comparison.py): Random Forest, XGBoost, and Gradient Boosting validate findings through 5-fold cross-validation and temporal validation (1968-2014 train, 2015-2020 test).
 
 **Robustness Checks:** Minimum sample thresholds (≥30 cases/country), regional aggregation, temporal split validation, and judge fixed-effects ensure finding robustness. Statistical association cannot definitively prove discrimination, as unmeasured confounders (case complexity, representation quality) may explain observed patterns.
 
