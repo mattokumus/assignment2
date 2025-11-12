@@ -490,7 +490,7 @@ def create_interactive_dashboard(df):
     print("   Building interactive visualizations...")
 
     fig = make_subplots(
-        rows=3, cols=3,
+        rows=4, cols=3,
         subplot_titles=(
             '📍 Top 15 Countries by Case Count',
             '⚖️ Violation Rate: Top 15 Countries',
@@ -499,18 +499,21 @@ def create_interactive_dashboard(df):
             '👥 Distribution of Applicant Types',
             '📊 Distribution of Violation Counts',
             '🗺️ Violation Rate Heatmap: Countries × Decades',
-            '',  # Heatmap spans 2 columns
-            '🔗 Correlation Matrix'
+            '',  # Heatmap spans 3 columns
+            '',
+            '🔗 Correlation Matrix',
+            '',  # Correlation spans 3 columns
+            ''
         ),
         specs=[
             [{'type': 'bar'}, {'type': 'bar'}, {'type': 'scatter'}],
             [{'type': 'scatter'}, {'type': 'bar'}, {'type': 'bar'}],
-            [{'type': 'heatmap', 'colspan': 2}, None, {'type': 'heatmap'}]
+            [{'type': 'heatmap', 'colspan': 3}, None, None],
+            [{'type': 'heatmap', 'colspan': 3}, None, None]
         ],
-        column_widths=[0.26, 0.26, 0.30],  # Adjust column widths for better spacing
-        vertical_spacing=0.18,
+        vertical_spacing=0.12,
         horizontal_spacing=0.10,
-        row_heights=[0.30, 0.30, 0.40]
+        row_heights=[0.23, 0.23, 0.27, 0.27]
     )
 
     # === ROW 1, COL 1: Top 15 Countries by Case Count ===
@@ -692,7 +695,7 @@ def create_interactive_dashboard(df):
             ),
             name='Correlation'
         ),
-        row=3, col=3
+        row=4, col=1
     )
 
     # Update axes
@@ -720,7 +723,7 @@ def create_interactive_dashboard(df):
             'xanchor': 'center',
             'font': {'size': 20}
         },
-        height=1400,
+        height=1600,
         margin=dict(t=120, b=80, l=50, r=50),
         showlegend=False,
         hovermode='closest',
