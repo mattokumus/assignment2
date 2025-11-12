@@ -659,7 +659,7 @@ def create_interactive_dashboard(df):
                 tickformat='.0%',
                 x=1.02,
                 xanchor='left',
-                y=0.36,
+                y=0.32,
                 yanchor='middle',
                 len=0.22,
                 thickness=12
