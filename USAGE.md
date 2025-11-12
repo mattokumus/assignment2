@@ -222,7 +222,7 @@ python3 ml_models_comparison.py
 
 **Validation strategies:**
 - **Random split:** 80/20 train/test (stratified)
-- **Temporal split:** Train on 2000-2014, test on 2015-2020
+- **Temporal split:** Train on 1968-2014, test on 2015-2020
 
 **What to look at:**
 - ROC-AUC scores (higher = better prediction)
