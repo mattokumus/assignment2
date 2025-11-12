@@ -203,7 +203,7 @@ python3 ml_models_comparison.py
 
 #### 1. **Exploratory Data Analysis (EDA)**
 - Descriptive statistics across 45 countries
-- Temporal trends (2000-2024)
+- Temporal trends (1968-2020)
 - Violation rates by article type and applicant category
 - Identifies raw patterns before statistical modeling
 
@@ -265,7 +265,7 @@ Significant Countries (9/16, 56.2%):
 
 ```
 Judge Regional Bias:
-- 403 unique judges in dataset, 156 with ≥20 cases (for reliable estimates)
+- 403 unique judges in dataset, 171 with ≥20 cases (for reliable estimates)
 - 140 judges with both Eastern & Western Europe cases
 - Average East-West difference: +29.1 pp
 - t-statistic: 14.07 (p < 0.0001)
@@ -431,7 +431,7 @@ Academic use only. Please cite if using this code or methodology.
 
 ```
 [Your Name] (2024). Does the European Court of Human Rights Treat Countries
-Differently? A Statistical Analysis of 1,904 Cases (2000-2024).
+Differently? A Statistical Analysis of 1,904 Cases (1968-2020).
 GitHub repository: https://github.com/mattokumus/assignment2
 ```
 

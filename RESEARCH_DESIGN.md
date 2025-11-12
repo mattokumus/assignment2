@@ -6,7 +6,7 @@
 
 **Methodology:** This study employs a multi-method triangulation strategy combining exploratory analysis, statistical hypothesis testing, regression modeling, judge-level analysis, and machine learning.
 
-**Data & Sample:** Analysis utilizes 2,000 substantive ECHR judgments (1968-2020), excluding procedural decisions (inadmissible/struck out) to focus on merit-based outcomes. The binary outcome distinguishes violations found versus no violations. Key predictors include respondent country (45 countries), regional classification (Eastern/Western Europe), violated ECHR articles, judgment year, applicant type, and judicial panel composition (president identity, judge names, panel size).
+**Data & Sample:** Analysis utilizes 1,904 substantive ECHR judgments (1968-2020), excluding procedural decisions (inadmissible/struck out) to focus on merit-based outcomes. The binary outcome distinguishes violations found versus no violations. Key predictors include respondent country (45 countries), regional classification (Eastern/Western Europe), violated ECHR articles, judgment year, applicant type, and judicial panel composition (president identity, judge names, panel size).
 
 **Analytical Pipeline:**
 
