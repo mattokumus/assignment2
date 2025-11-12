@@ -438,9 +438,10 @@ def create_interactive_dashboard(models_random, models_temporal,
     # Update layout
     fig.update_layout(
         title={'text': '🎯 Interactive ML Dashboard - ECHR Violation Prediction (Click, Zoom, Hover to Explore!)',
-               'x': 0.5, 'xanchor': 'center', 'y': 0.98, 'yanchor': 'top',
+               'x': 0.5, 'xanchor': 'center',
                'font': {'size': 16, 'color': 'darkblue', 'family': 'Arial Black'}},
         height=1500, showlegend=True,
+        margin=dict(t=150, b=50, l=50, r=50),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(size=8)),
         hovermode='closest', template='plotly_white', font=dict(size=9)
     )
