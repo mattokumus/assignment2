@@ -30,8 +30,8 @@ Our multi-method analysis provides robust evidence:
 | **Regional Gap** | Eastern Europe: 93.9% violation rate vs Western Europe: 72.2% (**+21.6 pp**, p < 0.001) |
 | **Country Effects Persist** | 9/16 countries (56.2%) remain significant after controlling for article type, year, and applicant type |
 | **Judge-Independent** | Country effects persist even after controlling for judge identity (14/16 countries significant with regularization) |
-| **ML Temporal Validation** | XGBoost: 86% accuracy, AUC-ROC = 0.833 (trained on 2000-2014, tested on 2015-2020) |
-| **Cross-Validation Performance** | Random Forest best: AUC-ROC = 0.810 (5-fold CV), demonstrating robust predictive patterns |
+| **ML Temporal Validation** | Random Forest: 89.4% accuracy, AUC-ROC = 0.813 (trained on 1968-2014, tested on 2015-2020) |
+| **Cross-Validation Performance** | Random Forest best: AUC-ROC = 0.808 (5-fold CV), demonstrating robust predictive patterns |
 | **Judge Regional Bias** | 140 judges show average +29.1 pp higher violation rate for Eastern Europe (t=14.07, p<0.0001) |
 
 **Important:** These findings do NOT necessarily indicate discrimination. Systematic differences may stem from legitimate factors including case characteristics, domestic legal systems, rule of law variations, and structural factors not captured in our data.
@@ -203,7 +203,7 @@ python3 ml_models_comparison.py
 
 #### 1. **Exploratory Data Analysis (EDA)**
 - Descriptive statistics across 45 countries
-- Temporal trends (2000-2024)
+- Temporal trends (1968-2020)
 - Violation rates by article type and applicant category
 - Identifies raw patterns before statistical modeling
 
@@ -265,7 +265,7 @@ Significant Countries (9/16, 56.2%):
 
 ```
 Judge Regional Bias:
-- 403 unique judges in dataset, 156 with ≥20 cases (for reliable estimates)
+- 403 unique judges in dataset, 171 with ≥20 cases (for reliable estimates)
 - 140 judges with both Eastern & Western Europe cases
 - Average East-West difference: +29.1 pp
 - t-statistic: 14.07 (p < 0.0001)
@@ -348,8 +348,8 @@ This analysis provides four key contributions:
    - Demonstrates regional bias exists across nearly all judges
 
 3. **Temporal validation**
-   - ML models trained on 2000-2014, tested on 2015-2020
-   - High performance (AUC=0.833) indicates stable patterns
+   - ML models trained on 1968-2014, tested on 2015-2020
+   - High performance (AUC=0.813) indicates stable patterns
    - No concept drift detected, suggesting structural factors
 
 4. **Comprehensive transparency**
@@ -431,7 +431,7 @@ Academic use only. Please cite if using this code or methodology.
 
 ```
 [Your Name] (2024). Does the European Court of Human Rights Treat Countries
-Differently? A Statistical Analysis of 1,904 Cases (2000-2024).
+Differently? A Statistical Analysis of 1,904 Cases (1968-2020).
 GitHub repository: https://github.com/mattokumus/assignment2
 ```
 
