@@ -419,7 +419,7 @@ This is an academic research project. For questions, suggestions, or collaborati
 
 1. Open an issue
 2. Submit a pull request
-3. Contact: matt.okumus@outlook.com
+3. Contact: matthio@uio.no
 
 ---
 
