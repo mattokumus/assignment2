@@ -631,7 +631,7 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
             [{'type': 'bar'}, {'type': 'bar'}, {'type': 'bar'}],
             [{'type': 'histogram'}, {'type': 'scatter'}, {'type': 'bar'}]
         ],
-        vertical_spacing=0.15,
+        vertical_spacing=0.20,
         horizontal_spacing=0.10
     )
 
@@ -869,6 +869,7 @@ def create_interactive_dashboard(df, country_stats_df, eastern_rate, western_rat
             'font': {'size': 18}
         },
         height=1000,
+        margin=dict(t=120, b=80, l=50, r=50),
         hovermode='closest',
         template='plotly_white',
         font=dict(family='Arial, sans-serif', size=10),
