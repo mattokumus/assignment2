@@ -347,7 +347,7 @@ def create_interactive_dashboard(models_random, models_temporal,
         specs=[[{"type": "scatter"}, {"type": "bar"}, {"type": "bar"}],
                [{"type": "bar"}, {"type": "bar"}, {"type": "bar"}],
                [{"type": "heatmap"}, {"type": "heatmap"}, {"type": "bar"}]],
-        vertical_spacing=0.12, horizontal_spacing=0.1
+        vertical_spacing=0.10, horizontal_spacing=0.1
     )
 
     # 1. ROC Curves with hover
