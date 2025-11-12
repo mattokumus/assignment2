@@ -207,28 +207,41 @@ python3 ml_models_comparison.py
 - Violation rates by article type and applicant category
 - Identifies raw patterns before statistical modeling
 
-#### 2. **Logistic Regression Models**
+#### 2. **Hypothesis Testing**
+- **Chi-square tests:** Independence of country and violation findings
+- **Proportion tests:** Regional differences (Eastern vs Western Europe)
+- **Country-specific tests:** Individual country violation rates vs overall average
+- Establishes statistical significance of observed differences
+
+#### 3. **Logistic Regression Models**
 - **Baseline:** `violation ~ country`
 - **Full Model:** `violation ~ country + article + year + applicant_type`
 - **Regional Model:** `violation ~ region + controls`
 - Tests whether country effects persist after controlling for confounders
 - Uses L1 regularization (Lasso) for high-dimensional models
 
-#### 3. **Judge-Level Analysis**
+#### 4. **Judge-Level Analysis**
 - Tests alternative "judge lottery" hypothesis
 - Compares models with/without judge fixed effects
 - Analyzes regional bias across 171 judges
 - Rules out judge assignment as primary explanation
 
+#### 5. **Machine Learning Models Comparison**
+- **Models:** Logistic Regression, Random Forest, XGBoost, Gradient Boosting
+- **Validation:** 5-fold cross-validation + temporal validation (train: 1968-2014, test: 2015-2020)
+- **Metrics:** AUC-ROC, F1-score, precision, recall, accuracy
+- Tests predictive stability and pattern robustness across time
+- Confirms systematic country effects are generalizable
+
 ### Key Methodological Decisions
 
 | Decision | Rationale |
 |----------|-----------|
+| **Substantive cases only** | Filters to violation/no-violation decisions; excludes procedural outcomes (inadmissible, struck out) |
 | **Min 30 cases/country** | Statistical power and reliable estimates (logistic regression & ML models) |
 | **Min 20 cases/judge** | Sufficient sample for judge-specific patterns |
-| **L1 Regularization** | Handles collinearity, prevents overfitting |
 | **Regional Classification** | Eastern Europe (23 countries) vs Western Europe (22 countries) based on post-communist transition |
-| **Turkey Classification** | Included in Eastern Europe based on ECHR case characteristics and democratization trajectory |
+| **Temporal validation** | ML models trained on 1968-2014, tested on 2015-2020 to assess pattern stability over time |
 
 ---
 
