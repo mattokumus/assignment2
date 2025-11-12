@@ -903,8 +903,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
     # Update layout
     fig.update_layout(
         title=dict(
-            text='<b>Judge-Level Analysis: ECHR Cases (1968-2020)</b><br>' +
-                 '<sub>Disentangling Judge Effects from Country Effects</sub>',
+            text='<b>Judge-Level Analysis: ECHR Cases (1968-2020)</b><br>',
             font=dict(size=20),
             x=0.5,
             xanchor='center'
