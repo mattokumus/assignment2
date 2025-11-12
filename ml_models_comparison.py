@@ -339,7 +339,7 @@ def create_interactive_dashboard(models_random, models_temporal,
         rows=3, cols=3,
         subplot_titles=(
             '📊 ROC Curves (Interactive)', '📈 Performance Metrics Comparison',
-            '🎯 Random vs Temporal Split', '🔥 Top 15 Feature Importance',
+            '🎯 Random vs Temporal Split', '🔥 Top 15 Feature Importance: Random Forest',
             '📉 Model Comparison', '⚡ Accuracy: Random vs Temporal',
             '🎲 Confusion: Random Forest', '🎲 Confusion: XGBoost (Temporal)',
             '📊 Model Ranking (CV ROC-AUC)'
