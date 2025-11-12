@@ -108,12 +108,12 @@ def prepare_features(df):
     # Create a copy for modeling
     df_model = df[features_to_use + ['has_violation']].copy()
 
-    # Filter to include only countries with sufficient cases (min 20)
+    # Filter to include only countries with sufficient cases (min 30)
     country_counts = df_model['country_name'].value_counts()
-    valid_countries = country_counts[country_counts >= 20].index
+    valid_countries = country_counts[country_counts >= 30].index
     df_model = df_model[df_model['country_name'].isin(valid_countries)]
 
-    print(f"✓ Filtered to {len(valid_countries)} countries with ≥20 cases")
+    print(f"✓ Filtered to {len(valid_countries)} countries with ≥30 cases")
     print(f"✓ Dataset size: {len(df_model)} cases")
 
     # One-hot encode categorical variables
@@ -338,8 +338,8 @@ def create_interactive_dashboard(models_random, models_temporal,
     fig = make_subplots(
         rows=3, cols=3,
         subplot_titles=(
-            '📊 ROC Curves (Interactive)', '📈 Performance Metrics Comparison',
-            '🎯 Random vs Temporal Split', '🔥 Top 15 Feature Importance: Random Forest',
+            '📊 ROC Curves (≥30 cases/country)', '📈 Performance Metrics Comparison',
+            '🎯 Random vs Temporal Split', '🔥 Top 15 Feature Importance (Random Forest, ≥30 cases)',
             '📉 Model Comparison', '⚡ Accuracy: Random vs Temporal',
             '🎲 Confusion: Random Forest', '🎲 Confusion: XGBoost (Temporal)',
             '📊 Model Ranking (CV ROC-AUC)'

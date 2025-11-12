@@ -177,13 +177,15 @@ python3 ml_models_comparison.py
 # Models: Logistic Regression, Random Forest, XGBoost, Gradient Boosting
 # Evaluation: 5-fold cross-validation with ROC-AUC, F1, Precision, Recall
 # Split strategies: Random (stratified) + Temporal (2015 cutoff)
-# Temporal split: Train on 2000-2014, Test on 2015-2020 for realistic generalization
+# Temporal split: Train on 1968-2014, Test on 2015-2020 for realistic generalization
+# NOTE: Only countries with ≥30 cases included (consistent with logistic regression)
 #
 # 🏆 Best Results:
-#   - Cross-Validation: Random Forest (AUC: 0.810, F1: 0.889)
-#   - Temporal Test: XGBoost (AUC: 0.833, Accuracy: 86.0%, F1: 0.919)
-#   - Temporal performance > Random split: +6.5% average improvement
-#   - Indicates stable patterns across time (no concept drift)
+#   - Cross-Validation: Random Forest (AUC: 0.808, F1: 0.894)
+#   - Random Split Test: Random Forest (AUC: 0.822, Accuracy: 84.4%, F1: 0.909)
+#   - Temporal Test: Random Forest (AUC: 0.813, Accuracy: 89.4%, F1: 0.941)
+#   - Temporal vs Random: Similar performance (stable patterns across time)
+#   - Dataset: 17 countries, 1,537 cases (1968-2020)
 #
 # 🌐 Interactive HTML Dashboard Features:
 #   - Double-click to open in browser (no web server needed!)
@@ -222,7 +224,7 @@ python3 ml_models_comparison.py
 
 | Decision | Rationale |
 |----------|-----------|
-| **Min 30 cases/country** | Statistical power and reliable estimates |
+| **Min 30 cases/country** | Statistical power and reliable estimates (logistic regression & ML models) |
 | **Min 20 cases/judge** | Sufficient sample for judge-specific patterns |
 | **L1 Regularization** | Handles collinearity, prevents overfitting |
 | **Regional Classification** | Eastern Europe (23 countries) vs Western Europe (22 countries) based on post-communist transition |
