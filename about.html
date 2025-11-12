@@ -277,8 +277,8 @@
                 <div class="finding-card">
                     <div class="finding-title">🤖 ML Temporal Validation</div>
                     <div class="finding-value">
-                        XGBoost model trained on 1968-2014 data, tested on 2015-2020:<br>
-                        <strong>86% accuracy, AUC-ROC = 0.833</strong><br>
+                        Random Forest trained on 1968-2014 data, tested on 2015-2020:<br>
+                        <strong>89.4% accuracy, AUC-ROC = 0.813</strong><br>
                         Indicates stable, predictable patterns across time periods.
                     </div>
                 </div>
@@ -287,7 +287,7 @@
                     <div class="finding-title">🎯 Cross-Validation Performance</div>
                     <div class="finding-value">
                         Random Forest best overall performer:<br>
-                        <strong>AUC-ROC = 0.810 (5-fold CV)</strong><br>
+                        <strong>AUC-ROC = 0.808 (5-fold CV)</strong><br>
                         Demonstrates robust predictive patterns across different data splits and configurations.
                     </div>
                 </div>
@@ -306,9 +306,9 @@
                 <ul class="methodology-list">
                     <li><strong>Exploratory Data Analysis:</strong> Descriptive statistics, temporal trends (1968-2020), and violation rates by country/region/article type across 1,904 substantive cases from 45 countries</li>
                     <li><strong>Hypothesis Testing:</strong> Chi-square tests, two-proportion z-tests, and Cohen's h effect size analysis comparing Eastern vs Western Europe (p < 0.001, large effect size)</li>
-                    <li><strong>Logistic Regression:</strong> Country-level models with L1 regularization (Lasso) controlling for article type, judgment year, and applicant type (Pseudo R² = 0.226, AUC = 0.801)</li>
+                    <li><strong>Logistic Regression:</strong> Country-level models (≥30 cases/country) with L1 regularization (Lasso) controlling for article type, judgment year, and applicant type (Pseudo R² = 0.226, AUC = 0.801)</li>
                     <li><strong>Judge Fixed Effects:</strong> Advanced models testing whether country effects persist after controlling for 403 unique judges (171 judges with ≥20 cases analyzed in detail)</li>
-                    <li><strong>Machine Learning:</strong> Random Forest, XGBoost, and Gradient Boosting with 5-fold cross-validation and temporal validation (train: 1968-2014, test: 2015-2020)</li>
+                    <li><strong>Machine Learning:</strong> Random Forest, XGBoost, and Gradient Boosting (≥30 cases/country) with 5-fold cross-validation and temporal validation (train: 1968-2014, test: 2015-2020)</li>
                 </ul>
             </div>
 
