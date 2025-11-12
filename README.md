@@ -2,6 +2,8 @@
 
 A comprehensive statistical analysis of 1,904 substantive ECtHR cases (1968-2020) examining systematic country differences in violation findings.
 
+**🌐 Interactive Dashboards:** [https://mattokumus.github.io/assignment2/](https://mattokumus.github.io/assignment2/)
+
 **📁 Complete Repository:** [https://github.com/mattokumus/assignment2](https://github.com/mattokumus/assignment2)
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
@@ -41,18 +43,17 @@ Our multi-method analysis provides robust evidence:
 ```
 assignment2/
 ├── README.md                              # This file
-├── RESEARCH_DESIGN.md                     # Task 2.1 - Research Design (250 words)
-├── REFLECTION.md                          # Task 2.2 - Method capabilities & limitations (250 words)
+├── RESEARCH_DESIGN.md                     # Research Design (250 words)
+├── REFLECTION.md                          # Method capabilities & limitations (250 words)
 ├── requirements.txt                       # Python dependencies
-├── ANALYSIS_REPORT_EN.md                  # Comprehensive English report
-├── ANALYSIS_REPORT_TR.md                  # Comprehensive Turkish report
+├── index.html                             # 🌐 Central dashboard page (GitHub Pages)
 │
 ├── Data Processing:
 │   ├── jsondocumenting.py                 # JSON schema documentation & mapping
 │   ├── data_extraction.py                 # Extract & preprocess data (JSON → CSV)
-│   ├── cases-2000.json                    # Raw ECHR case data (Git LFS)
+│   ├── cases-2000.json                    # Raw ECHR case data (University of Oslo)
 │   ├── cases-2000_schema.json             # JSON schema documentation
-│   └── extracted_data.csv                 # Processed dataset (2,000 cases)
+│   └── extracted_data.csv                 # Processed dataset (1,904 substantive cases)
 │
 ├── Analysis Scripts:
 │   ├── eda_analysis.py                    # Exploratory Data Analysis
@@ -61,34 +62,45 @@ assignment2/
 │   ├── judge_analysis.py                  # Judge-level analysis
 │   └── ml_models_comparison.py            # ML models (RF, XGBoost, GB) comparison
 │
-├── Visualizations:
-│   ├── eda_visualizations.png             # Country distributions, temporal trends (static)
-│   ├── eda_correlation.png                # Variable correlations (static)
-│   ├── eda_heatmap.png                    # Violation rate heatmap (static)
-│   ├── eda_interactive.html               # EDA interactive dashboard 🎯
-│   ├── hypothesis_test_visualizations.png # Statistical test results (static)
-│   ├── hypothesis_test_interactive.html   # Hypothesis testing interactive dashboard 🎯
-│   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves (static)
-│   ├── logistic_regression_interactive.html # Logistic regression interactive dashboard 🎯
-│   ├── judge_analysis_visualizations.png  # Judge variation, regional bias (static)
-│   ├── judge_analysis_interactive.html    # Judge analysis interactive dashboard 🎯
-│   ├── ml_models_comparison.png           # ML model performance (static)
-│   └── ml_models_interactive.html         # ML models interactive dashboard 🎯
+├── Interactive Dashboards (🎯 View online):
+│   ├── eda_interactive.html               # EDA interactive dashboard
+│   ├── hypothesis_test_interactive.html   # Hypothesis testing interactive dashboard
+│   ├── logistic_regression_interactive.html # Logistic regression interactive dashboard
+│   ├── judge_analysis_interactive.html    # Judge analysis interactive dashboard
+│   └── ml_models_interactive.html         # ML models interactive dashboard
 │
-└── Documentation:
-    ├── METHODOLOGY.md                     # Detailed statistical methodology
-    ├── DATA_PROVENANCE.md                 # Data pipeline documentation
-    └── JUDGE_ANALYSIS_README.md           # Judge analysis methodology
-
-└── Archive:
-    └── backup_pre_analysis_updates/       # Original versions (before improvements)
+└── Static Visualizations:
+    ├── eda_visualizations.png             # Country distributions, temporal trends
+    ├── eda_correlation.png                # Variable correlations
+    ├── eda_heatmap.png                    # Violation rate heatmap
+    ├── hypothesis_test_visualizations.png # Statistical test results
+    ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves
+    ├── judge_analysis_visualizations.png  # Judge variation, regional bias
+    └── ml_models_comparison.png           # ML model performance
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 🌐 View Interactive Dashboards Online
+
+**No installation required!** Explore all visualizations directly in your browser:
+
+👉 **[https://mattokumus.github.io/assignment2/](https://mattokumus.github.io/assignment2/)**
+
+Features:
+- 5 interactive Plotly dashboards
+- Hover for detailed statistics
+- Zoom, pan, and export functionality
+- Full-screen recommended for best experience
+- Works on desktop and mobile
+
+---
+
+### 💻 Run Analysis Locally
+
+#### Prerequisites
 
 - Python 3.8 or higher
 - Git LFS (for large data files)
@@ -185,11 +197,7 @@ python3 ml_models_comparison.py
 
 ## 📈 Methodology
 
-**📖 For detailed methodology with full justifications, see [METHODOLOGY.md](METHODOLOGY.md)**
-
-**📊 For data pipeline documentation, see [DATA_PROVENANCE.md](DATA_PROVENANCE.md)**
-
-### Three Complementary Approaches
+### Multi-Method Triangulation Approach
 
 #### 1. **Exploratory Data Analysis (EDA)**
 - Descriptive statistics across 45 countries
@@ -351,7 +359,9 @@ This analysis provides four key contributions:
 
 ## 📚 Dataset
 
-**Source:** European Court of Human Rights decisions (1968-2020)
+**Source:** [University of Oslo - JUS5080 Course Datasets](https://www.uio.no/studier/emner/jus/jus/JUS5080/h24/datasets/) (cases-2000.json)
+
+**Original Data:** European Court of Human Rights decisions (1968-2020)
 
 **Size:** 1,904 substantive cases from 45 countries (procedural cases excluded)
 
@@ -401,23 +411,6 @@ This analysis provides four key contributions:
 
 ---
 
-## 📄 Reports
-
-Detailed analysis reports available in two languages:
-
-- **English:** [ANALYSIS_REPORT_EN.md](ANALYSIS_REPORT_EN.md) (457 lines)
-- **Turkish:** [ANALYSIS_REPORT_TR.md](ANALYSIS_REPORT_TR.md) (720 lines)
-
-Both reports include:
-- Executive summary
-- Detailed methodology
-- Complete results
-- Visualization interpretations
-- Limitations and caveats
-- Academic context
-
----
-
 ## 🤝 Contributing
 
 This is an academic research project. For questions, suggestions, or collaboration:
@@ -444,9 +437,9 @@ GitHub repository: https://github.com/mattokumus/assignment2
 
 ## 🙏 Acknowledgments
 
-- European Court of Human Rights for publicly available data
-- Statsmodels, scikit-learn, and pandas communities
-- [Add any other acknowledgments]
+- **University of Oslo** - JUS5080 Course for providing the curated ECHR dataset
+- **European Court of Human Rights** - For publicly available case data (HUDOC Database)
+- **Open Source Communities** - Statsmodels, scikit-learn, pandas, and Plotly for excellent tools
 
 ---
 
@@ -458,6 +451,8 @@ GitHub repository: https://github.com/mattokumus/assignment2
 
 ---
 
-**Last Updated:** November 11, 2025
+**Last Updated:** November 12, 2025
 
-**Status:** ✅ Complete - Full 7-stage analysis pipeline executed with comprehensive documentation and reflective assessment
+**Status:** ✅ Complete - Full 7-stage analysis pipeline with interactive dashboards deployed on GitHub Pages
+
+**View Live:** [https://mattokumus.github.io/assignment2/](https://mattokumus.github.io/assignment2/)
