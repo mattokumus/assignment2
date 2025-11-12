@@ -347,7 +347,7 @@ def create_interactive_dashboard(models_random, models_temporal,
         specs=[[{"type": "scatter"}, {"type": "bar"}, {"type": "bar"}],
                [{"type": "bar"}, {"type": "bar"}, {"type": "bar"}],
                [{"type": "heatmap"}, {"type": "heatmap"}, {"type": "bar"}]],
-        vertical_spacing=0.12, horizontal_spacing=0.1
+        vertical_spacing=0.10, horizontal_spacing=0.1
     )
 
     # 1. ROC Curves with hover
@@ -395,20 +395,20 @@ def create_interactive_dashboard(models_random, models_temporal,
     random_f1 = [test_results_random[n]['f1'] for n in model_names]
     temporal_f1 = [test_results_temporal[n]['f1'] for n in model_names]
     fig.add_trace(go.Bar(x=model_names, y=random_f1, name='Random F1',
-                         marker_color='lightcoral', showlegend=False,
+                         marker_color='lightcoral', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>F1: %{y:.3f}<extra></extra>'), row=2, col=2)
     fig.add_trace(go.Bar(x=model_names, y=temporal_f1, name='Temporal F1',
-                         marker_color='darkred', showlegend=False,
+                         marker_color='darkred', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>F1: %{y:.3f}<extra></extra>'), row=2, col=2)
 
     # 6. Accuracy comparison
     random_acc = [test_results_random[n]['accuracy'] for n in model_names]
     temporal_acc = [test_results_temporal[n]['accuracy'] for n in model_names]
     fig.add_trace(go.Bar(x=model_names, y=random_acc, name='Random Acc',
-                         marker_color='lightgreen', showlegend=False,
+                         marker_color='lightgreen', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>Acc: %{y:.1%}<extra></extra>'), row=2, col=3)
     fig.add_trace(go.Bar(x=model_names, y=temporal_acc, name='Temporal Acc',
-                         marker_color='darkgreen', showlegend=False,
+                         marker_color='darkgreen', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>Acc: %{y:.1%}<extra></extra>'), row=2, col=3)
 
     # 7. Confusion matrix - Random Forest (Random)
@@ -439,8 +439,9 @@ def create_interactive_dashboard(models_random, models_temporal,
     fig.update_layout(
         title={'text': '🎯 Interactive ML Dashboard - ECHR Violation Prediction (Click, Zoom, Hover to Explore!)',
                'x': 0.5, 'xanchor': 'center',
-               'font': {'size': 18, 'color': 'darkblue', 'family': 'Arial Black'}},
-        height=1400, showlegend=True,
+               'font': {'size': 16, 'color': 'darkblue', 'family': 'Arial Black'}},
+        height=1500, showlegend=True,
+        margin=dict(t=180, b=50, l=50, r=50),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(size=10)),
         hovermode='closest', template='plotly_white', font=dict(size=9)
     )
@@ -630,7 +631,7 @@ def main():
     # ========================================================================
     print("\n" + "=" * 80)
     print("STRATEGY 2: TEMPORAL SPLIT (2015 CUTOFF)")
-    print("Train: 2000-2014, Test: 2015-2020 - realistic generalization")
+    print("Train on ALL < 2015, Test: 2015-2020 - realistic generalization")
     print("=" * 80)
 
     # Get year information from original df_model (before encoding)
@@ -750,7 +751,7 @@ def main():
     print(f"   - Total features: {len(feature_names)}")
     print(f"   - Total cases: {len(X)}")
     print(f"   - Random split: {len(X_train_random)} train / {len(X_test_random)} test")
-    print(f"   - Temporal split: {len(X_train_temporal)} train (2000-2014) / {len(X_test_temporal)} test (2015-2020)")
+    print(f"   - Temporal split: {len(X_train_temporal)} train on ALL < 2015 / {len(X_test_temporal)} test (2015-2020)")
 
     print("\n" + "=" * 80)
     print("💡 INTERPRETATION:")
@@ -758,7 +759,7 @@ def main():
     print("   ✅ Random split: Standard ML validation (optimistic)")
     print("   ✅ Temporal split: Realistic generalization test (past→future)")
     print("   ✅ Temporal outperformance indicates:")
-    print("      • ECHR patterns remain stable over time (2000-2020)")
+    print("      • ECHR patterns remain stable over time (1968-2020)")
     print("      • No significant concept drift detected")
     print("      • Models can reliably predict future case outcomes")
     print("      • Regional bias findings are temporally robust")

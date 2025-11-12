@@ -640,7 +640,7 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
             [{'type': 'histogram'}, {'type': 'bar'}, {'type': 'histogram'}],
             [{'type': 'bar'}, {'type': 'scatter'}, {'type': 'bar'}]
         ],
-        vertical_spacing=0.18,
+        vertical_spacing=0.22,
         horizontal_spacing=0.12
     )
 
@@ -903,13 +903,13 @@ def create_interactive_dashboard(df, judge_panel_df, judge_violation_rates, judg
     # Update layout
     fig.update_layout(
         title=dict(
-            text='<b>Judge-Level Analysis: ECHR Cases (1968-2020)</b><br>' +
-                 '<sub>Disentangling Judge Effects from Country Effects</sub>',
+            text='<b>Judge-Level Analysis: ECHR Cases (1968-2020)</b><br>',
             font=dict(size=20),
             x=0.5,
             xanchor='center'
         ),
         height=1000,
+        margin=dict(t=120, b=80, l=50, r=50),
         showlegend=False,
         hovermode='closest',
         plot_bgcolor='rgba(240,240,240,0.5)',

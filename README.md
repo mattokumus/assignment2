@@ -1,6 +1,8 @@
 # Does the European Court of Human Rights Treat Countries Differently?
 
-A comprehensive statistical analysis of 2,000 ECtHR cases (1968-2020) examining systematic country differences in violation findings.
+A comprehensive statistical analysis of 1,904 substantive ECtHR cases (1968-2020) examining systematic country differences in violation findings.
+
+**🌐 Interactive Dashboards:** [https://mattokumus.github.io/assignment2/](https://mattokumus.github.io/assignment2/)
 
 **📁 Complete Repository:** [https://github.com/mattokumus/assignment2](https://github.com/mattokumus/assignment2)
 
@@ -26,10 +28,11 @@ Our multi-method analysis provides robust evidence:
 | Finding | Evidence |
 |---------|----------|
 | **Regional Gap** | Eastern Europe: 93.9% violation rate vs Western Europe: 72.2% (**+21.6 pp**, p < 0.001) |
-| **Country Effects Persist** | 56.2% of countries remain significant after controlling for article type, year, and applicant type |
-| **Judge-Independent** | Country effects persist even after controlling for judge identity (14/16 countries significant) |
-| **Model Performance** | 89% accuracy, AUC-ROC = 0.801 in predicting violations by country |
-| **Judge Regional Bias** | 171 judges show average +29.1 pp higher violation rate for Eastern Europe (t=14.07, p<0.0001) |
+| **Country Effects Persist** | 9/16 countries (56.2%) remain significant after controlling for article type, year, and applicant type |
+| **Judge-Independent** | Country effects persist even after controlling for judge identity (14/16 countries significant with regularization) |
+| **ML Temporal Validation** | XGBoost: 86% accuracy, AUC-ROC = 0.833 (trained on 2000-2014, tested on 2015-2020) |
+| **Cross-Validation Performance** | Random Forest best: AUC-ROC = 0.810 (5-fold CV), demonstrating robust predictive patterns |
+| **Judge Regional Bias** | 140 judges show average +29.1 pp higher violation rate for Eastern Europe (t=14.07, p<0.0001) |
 
 **Important:** These findings do NOT necessarily indicate discrimination. Systematic differences may stem from legitimate factors including case characteristics, domestic legal systems, rule of law variations, and structural factors not captured in our data.
 
@@ -40,17 +43,17 @@ Our multi-method analysis provides robust evidence:
 ```
 assignment2/
 ├── README.md                              # This file
-├── RESEARCH_DESIGN.md                     # Task 2.1 - Research Design (250 words)
+├── RESEARCH_DESIGN.md                     # Research Design (250 words)
+├── REFLECTION.md                          # Method capabilities & limitations (250 words)
 ├── requirements.txt                       # Python dependencies
-├── ANALYSIS_REPORT_EN.md                  # Comprehensive English report
-├── ANALYSIS_REPORT_TR.md                  # Comprehensive Turkish report
+├── index.html                             # 🌐 Central dashboard page (GitHub Pages)
 │
 ├── Data Processing:
 │   ├── jsondocumenting.py                 # JSON schema documentation & mapping
 │   ├── data_extraction.py                 # Extract & preprocess data (JSON → CSV)
-│   ├── cases-2000.json                    # Raw ECHR case data (Git LFS)
+│   ├── cases-2000.json                    # Raw ECHR case data (University of Oslo)
 │   ├── cases-2000_schema.json             # JSON schema documentation
-│   └── extracted_data.csv                 # Processed dataset (2,000 cases)
+│   └── extracted_data.csv                 # Processed dataset (1,904 substantive cases)
 │
 ├── Analysis Scripts:
 │   ├── eda_analysis.py                    # Exploratory Data Analysis
@@ -59,34 +62,45 @@ assignment2/
 │   ├── judge_analysis.py                  # Judge-level analysis
 │   └── ml_models_comparison.py            # ML models (RF, XGBoost, GB) comparison
 │
-├── Visualizations:
-│   ├── eda_visualizations.png             # Country distributions, temporal trends (static)
-│   ├── eda_correlation.png                # Variable correlations (static)
-│   ├── eda_heatmap.png                    # Violation rate heatmap (static)
-│   ├── eda_interactive.html               # EDA interactive dashboard 🎯
-│   ├── hypothesis_test_visualizations.png # Statistical test results (static)
-│   ├── hypothesis_test_interactive.html   # Hypothesis testing interactive dashboard 🎯
-│   ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves (static)
-│   ├── logistic_regression_interactive.html # Logistic regression interactive dashboard 🎯
-│   ├── judge_analysis_visualizations.png  # Judge variation, regional bias (static)
-│   ├── judge_analysis_interactive.html    # Judge analysis interactive dashboard 🎯
-│   ├── ml_models_comparison.png           # ML model performance (static)
-│   └── ml_models_interactive.html         # ML models interactive dashboard 🎯
+├── Interactive Dashboards (🎯 View online):
+│   ├── eda_interactive.html               # EDA interactive dashboard
+│   ├── hypothesis_test_interactive.html   # Hypothesis testing interactive dashboard
+│   ├── logistic_regression_interactive.html # Logistic regression interactive dashboard
+│   ├── judge_analysis_interactive.html    # Judge analysis interactive dashboard
+│   └── ml_models_interactive.html         # ML models interactive dashboard
 │
-└── Documentation:
-    ├── METHODOLOGY.md                     # Detailed statistical methodology
-    ├── DATA_PROVENANCE.md                 # Data pipeline documentation
-    └── JUDGE_ANALYSIS_README.md           # Judge analysis methodology
-
-└── Archive:
-    └── backup_pre_analysis_updates/       # Original versions (before improvements)
+└── Static Visualizations:
+    ├── eda_visualizations.png             # Country distributions, temporal trends
+    ├── eda_correlation.png                # Variable correlations
+    ├── eda_heatmap.png                    # Violation rate heatmap
+    ├── hypothesis_test_visualizations.png # Statistical test results
+    ├── logistic_regression_analysis.png   # Odds ratios, model fit, ROC curves
+    ├── judge_analysis_visualizations.png  # Judge variation, regional bias
+    └── ml_models_comparison.png           # ML model performance
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 🌐 View Interactive Dashboards Online
+
+**No installation required!** Explore all visualizations directly in your browser:
+
+👉 **[https://mattokumus.github.io/assignment2/](https://mattokumus.github.io/assignment2/)**
+
+Features:
+- 5 interactive Plotly dashboards
+- Hover for detailed statistics
+- Zoom, pan, and export functionality
+- Full-screen recommended for best experience
+- Works on desktop and mobile
+
+---
+
+### 💻 Run Analysis Locally
+
+#### Prerequisites
 
 - Python 3.8 or higher
 - Git LFS (for large data files)
@@ -116,7 +130,9 @@ python3 jsondocumenting.py
 
 # 1. Extract & preprocess data from JSON
 python3 data_extraction.py
-# Outputs: extracted_data.csv (2,000 substantive cases)
+# Outputs: extracted_data.csv (1,904 substantive cases)
+# Note: Filters to substantive decisions only (violation/no-violation)
+# Excludes procedural outcomes (inadmissible, struck out)
 
 # 2. Exploratory Data Analysis
 python3 eda_analysis.py
@@ -163,6 +179,12 @@ python3 ml_models_comparison.py
 # Split strategies: Random (stratified) + Temporal (2015 cutoff)
 # Temporal split: Train on 2000-2014, Test on 2015-2020 for realistic generalization
 #
+# 🏆 Best Results:
+#   - Cross-Validation: Random Forest (AUC: 0.810, F1: 0.889)
+#   - Temporal Test: XGBoost (AUC: 0.833, Accuracy: 86.0%, F1: 0.919)
+#   - Temporal performance > Random split: +6.5% average improvement
+#   - Indicates stable patterns across time (no concept drift)
+#
 # 🌐 Interactive HTML Dashboard Features:
 #   - Double-click to open in browser (no web server needed!)
 #   - Hover for detailed metrics
@@ -175,11 +197,7 @@ python3 ml_models_comparison.py
 
 ## 📈 Methodology
 
-**📖 For detailed methodology with full justifications, see [METHODOLOGY.md](METHODOLOGY.md)**
-
-**📊 For data pipeline documentation, see [DATA_PROVENANCE.md](DATA_PROVENANCE.md)**
-
-### Three Complementary Approaches
+### Multi-Method Triangulation Approach
 
 #### 1. **Exploratory Data Analysis (EDA)**
 - Descriptive statistics across 45 countries
@@ -245,15 +263,17 @@ Significant Countries (9/16, 56.2%):
 
 ```
 Judge Regional Bias:
-- 171 judges analyzed (min 20 cases each)
+- 403 unique judges in dataset, 156 with ≥20 cases (for reliable estimates)
+- 140 judges with both Eastern & Western Europe cases
 - Average East-West difference: +29.1 pp
 - t-statistic: 14.07 (p < 0.0001)
 - Interpretation: Nearly ALL judges find more violations in Eastern Europe
 
-Model Comparison:
-- Without judge control: 14/16 countries significant
-- With judge control: 14/16 countries significant
-- Conclusion: Country effects persist completely
+Model Comparison (Lasso Regularization):
+- Without judge control: 14/16 countries significant (|coef| > 0.5)
+- With judge control: 14/16 countries significant (|coef| > 0.5)
+- Average country coefficient magnitude: 2.249 → 2.303 (+2.4%)
+- Conclusion: Country effects persist completely after judge controls
 ```
 
 ---
@@ -272,55 +292,78 @@ Model Comparison:
 ![Judge Analysis](judge_analysis_visualizations.png)
 *Judge violation rate distribution, regional bias, president effects, top countries*
 
+### Machine Learning Models Comparison
+![ML Models](ml_models_comparison.png)
+*ROC curves, cross-validation performance, confusion matrices, feature importance, temporal validation*
+
 ---
 
 ## ⚠️ Important Caveats
 
+**📖 For detailed reflection on method capabilities and limitations, see [REFLECTION.md](REFLECTION.md)**
+
 1. **Statistical significance ≠ Discrimination**
    - Systematic differences may reflect legitimate factors
+   - Cannot distinguish judicial bias from genuine human rights conditions
+   - Country effects may accurately mirror domestic rule-of-law variations
 
 2. **Unmeasured confounders**
-   - Case complexity not captured
+   - Case complexity not captured (legal argument sophistication)
    - Quality of legal representation unknown
-   - Strength of evidence varies
+   - Strength of evidence varies across cases
+   - Domestic legal context differences
 
 3. **Selection bias**
-   - Only cases reaching ECtHR (filtered by admissibility)
-   - May not represent all violations
+   - Only cases surviving domestic remedies reach ECtHR
+   - Admissibility thresholds filter cases before judicial review
+   - Observed patterns may reflect pre-selection, not Court treatment
+   - High violation rate (89.1%) indicates case selection effects
 
-4. **Observational data**
-   - Causal claims limited
+4. **Observational data limitations**
    - Correlation established, not causation
+   - Cannot demonstrate discrimination without experimental manipulation
+   - Regional patterns may reflect post-communist challenges vs discriminatory scrutiny
 
-5. **Limited time period**
-   - 2000-2024 only
-   - Historical context may differ
+5. **Temporal coverage**
+   - 1968-2020 period
+   - Most cases concentrated 2000-2020 (90.5%)
+   - Historical context differs across eras
 
 ---
 
 ## 🎓 Academic Contribution
 
-This analysis provides three key contributions:
+This analysis provides four key contributions:
 
-1. **Multi-method validation**
-   - Converging evidence from EDA, regression, and judge analysis
-   - Robust finding across multiple specifications
+1. **Multi-method triangulation**
+   - Converging evidence from EDA, hypothesis testing, logistic regression, judge analysis, and ML
+   - Robust findings across 5 different analytical approaches
+   - Statistical significance confirmed via multiple independent tests
 
 2. **Alternative hypothesis testing**
-   - Rules out "judge lottery" explanation
+   - Rules out "judge lottery" explanation via judge fixed-effects models
    - Shows country effects are systematic, not idiosyncratic
+   - Demonstrates regional bias exists across nearly all judges
 
-3. **Comprehensive transparency**
+3. **Temporal validation**
+   - ML models trained on 2000-2014, tested on 2015-2020
+   - High performance (AUC=0.833) indicates stable patterns
+   - No concept drift detected, suggesting structural factors
+
+4. **Comprehensive transparency**
    - All code, data, and methods publicly available
-   - Reproducible research pipeline
+   - Reproducible research pipeline with detailed documentation
+   - Clear articulation of what methods can and cannot demonstrate (see REFLECTION.md)
 
 ---
 
 ## 📚 Dataset
 
-**Source:** European Court of Human Rights decisions (1968-2020)
+**Source:** [University of Oslo - JUS5080 Course Datasets](https://www.uio.no/studier/emner/jus/jus/JUS5080/h24/datasets/) (cases-2000.json)
 
-**Size:** 2,000 substantive cases from 45 countries
+**Original Data:** European Court of Human Rights decisions (1968-2020)
+
+**Size:** 1,904 substantive cases from 45 countries (procedural cases excluded)
 
 **Variables:**
 - `country_name`: Respondent country
@@ -339,43 +382,32 @@ This analysis provides three key contributions:
 ## 🔬 Future Research Directions
 
 1. **Case-level complexity measures**
-   - Legal argument sophistication
+   - Legal argument sophistication scores
    - Evidence strength coding
+   - Length and quality of legal representation
 
 2. **Article-specific analysis**
    - Separate models by Article (3, 5, 6, 8, etc.)
-   - Different patterns may emerge
+   - Different patterns may emerge for different rights
+   - Article-specific temporal trends
 
 3. **Domestic legal system variables**
-   - Rule of law indices
-   - Judicial independence scores
-   - Democratic quality measures
+   - Rule of law indices (World Justice Project)
+   - Judicial independence scores (V-Dem)
+   - Democratic quality measures (Freedom House, Polity IV)
+   - Correlation with domestic human rights conditions
 
 4. **Temporal dynamics**
    - Changes over time within countries
-   - EU accession effects
+   - EU accession effects and pre/post comparisons
+   - Impact of specific ECtHR precedents
+   - Judge tenure and experience effects
 
-5. **Machine learning approaches**
-   - Random forests, gradient boosting
-   - Interaction effects
-   - Non-linear patterns
-
----
-
-## 📄 Reports
-
-Detailed analysis reports available in two languages:
-
-- **English:** [ANALYSIS_REPORT_EN.md](ANALYSIS_REPORT_EN.md) (457 lines)
-- **Turkish:** [ANALYSIS_REPORT_TR.md](ANALYSIS_REPORT_TR.md) (720 lines)
-
-Both reports include:
-- Executive summary
-- Detailed methodology
-- Complete results
-- Visualization interpretations
-- Limitations and caveats
-- Academic context
+5. **Causal inference approaches**
+   - Difference-in-differences for policy changes
+   - Regression discontinuity designs
+   - Instrumental variable approaches for judge assignment
+   - Matching methods for case similarity
 
 ---
 
@@ -385,7 +417,7 @@ This is an academic research project. For questions, suggestions, or collaborati
 
 1. Open an issue
 2. Submit a pull request
-3. Contact: [Your contact information]
+3. Contact: matt.okumus@outlook.com
 
 ---
 
@@ -405,20 +437,22 @@ GitHub repository: https://github.com/mattokumus/assignment2
 
 ## 🙏 Acknowledgments
 
-- European Court of Human Rights for publicly available data
-- Statsmodels, scikit-learn, and pandas communities
-- [Add any other acknowledgments]
+- **University of Oslo** - JUS5080 Course for providing the curated ECHR dataset
+- **European Court of Human Rights** - For publicly available case data (HUDOC Database)
+- **Open Source Communities** - Statsmodels, scikit-learn, pandas, and Plotly for excellent tools
 
 ---
 
 ## 📧 Contact
 
 - **GitHub:** [@mattokumus](https://github.com/mattokumus)
-- **Email:** [Your email]
-- **Institution:** [Your institution]
+- **Email:** matt.okumus@outlook.com
+- **Institution:** UIO
 
 ---
 
-**Last Updated:** November 2024
+**Last Updated:** November 12, 2025
 
-**Status:** ✅ Complete - Reproducible research pipeline with comprehensive documentation
+**Status:** ✅ Complete - Full 7-stage analysis pipeline with interactive dashboards deployed on GitHub Pages
+
+**View Live:** [https://mattokumus.github.io/assignment2/](https://mattokumus.github.io/assignment2/)

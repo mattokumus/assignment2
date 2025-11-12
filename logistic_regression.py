@@ -575,7 +575,7 @@ def create_interactive_dashboard(baseline_result, full_result, regional_result,
             [{'type': 'bar'}, {'type': 'pie'}, {'type': 'bar'}],
             [{'type': 'scatter'}, {'type': 'histogram'}, {'type': 'bar'}]
         ],
-        vertical_spacing=0.15,
+        vertical_spacing=0.20,
         horizontal_spacing=0.10
     )
 
@@ -739,6 +739,7 @@ def create_interactive_dashboard(baseline_result, full_result, regional_result,
             'font': {'size': 18}
         },
         height=1000,
+        margin=dict(t=120, b=80, l=50, r=50),
         showlegend=False,
         hovermode='closest',
         template='plotly_white',

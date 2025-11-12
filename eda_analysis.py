@@ -388,7 +388,7 @@ def generate_summary_report(df):
     
     print("""
 📋 SUMMARY:
-✓ Dataset contains 2000 cases from 45 countries (1968-2020)
+✓ Dataset contains 1904 cases from 45 countries (1968-2020)
 ✓ Overall violation rate: 84.9%
 ✓ Significant variation across countries
 ✓ Sample size highly imbalanced
@@ -490,7 +490,7 @@ def create_interactive_dashboard(df):
     print("   Building interactive visualizations...")
 
     fig = make_subplots(
-        rows=3, cols=3,
+        rows=4, cols=3,
         subplot_titles=(
             '📍 Top 15 Countries by Case Count',
             '⚖️ Violation Rate: Top 15 Countries',
@@ -499,18 +499,21 @@ def create_interactive_dashboard(df):
             '👥 Distribution of Applicant Types',
             '📊 Distribution of Violation Counts',
             '🗺️ Violation Rate Heatmap: Countries × Decades',
-            '',  # Heatmap spans 2 columns
-            '🔗 Correlation Matrix'
+            '',  # Heatmap spans 3 columns
+            '',
+            '🔗 Correlation Matrix',
+            '',  # Correlation spans 3 columns
+            ''
         ),
         specs=[
             [{'type': 'bar'}, {'type': 'bar'}, {'type': 'scatter'}],
             [{'type': 'scatter'}, {'type': 'bar'}, {'type': 'bar'}],
-            [{'type': 'heatmap', 'colspan': 2}, None, {'type': 'heatmap'}]
+            [{'type': 'heatmap', 'colspan': 3}, None, None],
+            [{'type': 'heatmap', 'colspan': 3}, None, None]
         ],
-        column_widths=[0.26, 0.26, 0.30],  # Adjust column widths for better spacing
-        vertical_spacing=0.12,
+        vertical_spacing=0.10,
         horizontal_spacing=0.10,
-        row_heights=[0.30, 0.30, 0.40]
+        row_heights=[0.20, 0.20, 0.30, 0.30]
     )
 
     # === ROW 1, COL 1: Top 15 Countries by Case Count ===
@@ -654,11 +657,11 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Violation<br>Rate', side='right'),
                 tickformat='.0%',
-                x=0.63,
+                x=1.02,
                 xanchor='left',
-                y=0.15,
+                y=0.41,
                 yanchor='middle',
-                len=0.35,
+                len=0.22,
                 thickness=12
             ),
             name='Heatmap'
@@ -683,16 +686,16 @@ def create_interactive_dashboard(df):
             colorbar=dict(
                 title=dict(text='Correlation', side='right'),
                 tickformat='.2f',
-                x=1.05,
+                x=1.02,
                 xanchor='left',
-                y=0.15,
+                y=0.10,
                 yanchor='middle',
-                len=0.35,
+                len=0.22,
                 thickness=12
             ),
             name='Correlation'
         ),
-        row=3, col=3
+        row=4, col=1
     )
 
     # Update axes
@@ -720,7 +723,8 @@ def create_interactive_dashboard(df):
             'xanchor': 'center',
             'font': {'size': 20}
         },
-        height=1400,
+        height=1900,
+        margin=dict(t=120, b=80, l=50, r=50),
         showlegend=False,
         hovermode='closest',
         template='plotly_white',
