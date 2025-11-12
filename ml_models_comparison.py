@@ -347,7 +347,7 @@ def create_interactive_dashboard(models_random, models_temporal,
         specs=[[{"type": "scatter"}, {"type": "bar"}, {"type": "bar"}],
                [{"type": "bar"}, {"type": "bar"}, {"type": "bar"}],
                [{"type": "heatmap"}, {"type": "heatmap"}, {"type": "bar"}]],
-        vertical_spacing=0.17, horizontal_spacing=0.1
+        vertical_spacing=0.18, horizontal_spacing=0.1
     )
 
     # 1. ROC Curves with hover
@@ -441,7 +441,7 @@ def create_interactive_dashboard(models_random, models_temporal,
                'x': 0.5, 'xanchor': 'center',
                'font': {'size': 18, 'color': 'darkblue', 'family': 'Arial Black'}},
         height=1400, showlegend=True,
-        legend=dict(orientation="h", yanchor="bottom", y=1.00, xanchor="center", x=0.5, font=dict(size=10)),
+        legend=dict(orientation="h", yanchor="bottom", y=1.04, xanchor="center", x=0.5, font=dict(size=9)),
         hovermode='closest', template='plotly_white', font=dict(size=9)
     )
 
