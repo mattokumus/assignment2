@@ -511,7 +511,7 @@ def create_interactive_dashboard(df):
             [{'type': 'heatmap', 'colspan': 3}, None, None],
             [{'type': 'heatmap', 'colspan': 3}, None, None]
         ],
-        vertical_spacing=0.20,
+        vertical_spacing=0.13,
         horizontal_spacing=0.10,
         row_heights=[0.20, 0.20, 0.30, 0.30]
     )
@@ -659,9 +659,9 @@ def create_interactive_dashboard(df):
                 tickformat='.0%',
                 x=1.02,
                 xanchor='left',
-                y=0.65,
+                y=0.36,
                 yanchor='middle',
-                len=0.25,
+                len=0.22,
                 thickness=12
             ),
             name='Heatmap'
@@ -688,9 +688,9 @@ def create_interactive_dashboard(df):
                 tickformat='.2f',
                 x=1.02,
                 xanchor='left',
-                y=0.25,
+                y=0.10,
                 yanchor='middle',
-                len=0.25,
+                len=0.22,
                 thickness=12
             ),
             name='Correlation'
