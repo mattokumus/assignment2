@@ -462,7 +462,7 @@ GitHub repository: https://github.com/mattokumus/assignment2
 
 - **GitHub:** [@mattokumus](https://github.com/mattokumus)
 - **Email:** matthio@uio.no
-- **Institution:** UIO
+- **Institution:** University of Oslo
 
 ---
 
