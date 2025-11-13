@@ -443,7 +443,7 @@ Academic use only. Please cite if using this code or methodology.
 ### Suggested Citation
 
 ```
-[Your Name] (2024). Does the European Court of Human Rights Treat Countries
+Matthias Okumus (2025). Does the European Court of Human Rights Treat Countries
 Differently? A Statistical Analysis of 1,904 Cases (1968-2020).
 GitHub repository: https://github.com/mattokumus/assignment2
 ```
