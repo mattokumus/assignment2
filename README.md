@@ -452,8 +452,8 @@ GitHub repository: https://github.com/mattokumus/assignment2
 
 ## 🙏 Acknowledgments
 
-- **University of Oslo** - JUS5080 Course for providing the curated ECHR dataset
-- **European Court of Human Rights** - For publicly available case data (HUDOC Database)
+- **University of Oslo** - JUS5080 Course for providing the curated ECHR dataset (cases-2000.json)
+- **European Court of Human Rights** - Original source of case data via HUDOC Database
 - **Open Source Communities** - Statsmodels, scikit-learn, pandas, and Plotly for excellent tools
 
 ---
