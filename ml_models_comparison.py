@@ -341,7 +341,7 @@ def create_interactive_dashboard(models_random, models_temporal,
             '📊 ROC Curves (≥30 cases/country)', '📈 Performance Metrics Comparison',
             '🎯 Random vs Temporal Split', '🔥 Top 15 Feature Importance (Random Forest, ≥30 cases)',
             '📉 Model Comparison', '⚡ Accuracy: Random vs Temporal',
-            '🎲 Confusion: Random Forest', '🎲 Confusion: XGBoost (Temporal)',
+            '🎲 Confusion: Random Forest (Random Split)', '🎲 Confusion: XGBoost (Random Split)',
             '📊 Model Ranking (CV ROC-AUC)'
         ),
         specs=[[{"type": "scatter"}, {"type": "bar"}, {"type": "bar"}],
@@ -411,7 +411,7 @@ def create_interactive_dashboard(models_random, models_temporal,
                          marker_color='darkgreen', showlegend=True,
                          hovertemplate='<b>%{x}</b><br>Acc: %{y:.1%}<extra></extra>'), row=2, col=3)
 
-    # 7. Confusion matrix - Random Forest (Random)
+    # 7. Confusion matrix - Random Forest (Random Split)
     cm_rf = test_results_random['Random Forest']['confusion_matrix']
     fig.add_trace(go.Heatmap(z=cm_rf, x=['No Viol', 'Violation'],
                              y=['No Viol', 'Violation'], colorscale='Blues',
@@ -419,8 +419,8 @@ def create_interactive_dashboard(models_random, models_temporal,
                              hovertemplate='True: %{y}<br>Pred: %{x}<br>Count: %{z}<extra></extra>',
                              showscale=False), row=3, col=1)
 
-    # 8. Confusion matrix - XGBoost (Temporal)
-    cm_xgb = test_results_temporal['XGBoost']['confusion_matrix']
+    # 8. Confusion matrix - XGBoost (Random Split) - FIXED: use same split as Random Forest
+    cm_xgb = test_results_random['XGBoost']['confusion_matrix']
     fig.add_trace(go.Heatmap(z=cm_xgb, x=['No Viol', 'Violation'],
                              y=['No Viol', 'Violation'], colorscale='Greens',
                              text=cm_xgb, texttemplate='%{text}',
