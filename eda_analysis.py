@@ -387,13 +387,6 @@ def generate_summary_report(df):
     print("=" * 80)
     
     print("""
-📋 SUMMARY:
-✓ Dataset contains 1904 cases from 45 countries (1968-2020)
-✓ Overall violation rate: 84.9%
-✓ Significant variation across countries
-✓ Sample size highly imbalanced
-✓ Temporal trends present
-
 🎯 RECOMMENDATIONS FOR NEXT STEPS:
 
 1. Statistical Modeling:
