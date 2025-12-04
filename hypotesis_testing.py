@@ -52,8 +52,8 @@ def chi_square_test(df):
     print("\n" + "=" * 80)
     print("TEST 1: CHI-SQUARE TEST OF INDEPENDENCE")
     print("=" * 80)
-    print("\nH0: Ülke ve ihlal birbirinden BAĞIMSIZ")
-    print("H1: Ülke ve ihlal arasında İLİŞKİ var")
+    print("\nH0: Country and violation are INDEPENDENT")
+    print("H1: Country and violation are ASSOCIATED")
     
     # Create contingency table
     contingency_table = pd.crosstab(df['country_name'], df['has_violation'])
